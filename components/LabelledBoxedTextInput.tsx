@@ -20,7 +20,7 @@ const LabelledBoxedTextInput = ({
 }: Props) => {
   // console.log(placeholder);
   return (
-    <View className="flex-col items-start my-2 mx-8">
+    <View className="flex-col items-start w-80 py-1">
       {/* Label text */}
       <Text className="text-xs text-light-200 pb-1 pl-1">{label}</Text>
       <View className="flex-row align-center bg-light-200 rounded-xl h-11">
