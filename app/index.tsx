@@ -22,9 +22,7 @@ export default function Index() {
       >
         {/* Logo here */}
         <Image />
-        <Text className="text-3xl text-light-100 mb-2 font-bold">
-          Become a member!
-        </Text>
+        <Text className="text-3xl text-light-100 mb-2 font-bold">Welcome!</Text>
 
         {/* Email text box */}
         <LabelledBoxedTextInput
