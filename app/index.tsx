@@ -29,7 +29,7 @@ export default function Index() {
           placeholder="johndoe@gmail.com"
           value={emailText}
           onChangeText={setEmailText}
-          label="Email Address"
+          label="Email Address / Phone Number"
         />
 
         {/* Password text box */}
