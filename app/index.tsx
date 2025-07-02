@@ -43,7 +43,10 @@ export default function Index() {
         />
 
         <View className="w-80 self-center py-6">
-          {/* Login button */}
+          {/* Login button
+           * Temporarily route directly to home screen.
+           * Link to proper authentication later.
+           */}
           <View className="flex-row items-center pb-8">
             <TouchableOpacity
               className="w-full h-12 rounded-xl border border-white items-center justify-center"
