@@ -14,6 +14,7 @@ const _layout = () => {
     <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
+        headerShown: false,
         animation: "fade",
         transitionSpec: {
           animation: "timing",
