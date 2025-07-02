@@ -1,14 +1,14 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const order = () => {
+const qr = () => {
   return (
     <View>
-      <Text>order</Text>
+      <Text>qr</Text>
     </View>
   );
 };
 
-export default order;
+export default qr;
 
 const styles = StyleSheet.create({});

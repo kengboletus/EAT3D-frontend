@@ -6,7 +6,12 @@ const Router = router;
 
 export default function RootLayout() {
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        animation: "fade",
+        animationDuration: 150,
+      }}
+    >
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
         name="onboarding"
@@ -19,6 +24,7 @@ export default function RootLayout() {
           headerTitle: "",
         }}
       />
+      <Stack.Screen name="(eshop)" options={{ headerShown: false }} />
     </Stack>
   );
 }

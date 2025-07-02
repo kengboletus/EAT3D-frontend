@@ -1,5 +1,5 @@
 import LabelledBoxedTextInput from "@/components/LabelledBoxedTextInput";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
   Image,
@@ -12,6 +12,7 @@ import {
 } from "react-native";
 
 export default function Index() {
+  const Router = useRouter();
   const [emailText, setEmailText] = useState("");
   const [passwordText, setPasswordText] = useState("");
   return (
@@ -46,7 +47,9 @@ export default function Index() {
           <View className="flex-row items-center pb-8">
             <TouchableOpacity
               className="w-full h-12 rounded-xl border border-white items-center justify-center"
-              onPress={() => {}}
+              onPress={() => {
+                Router.navigate("/(eshop)/home");
+              }}
               activeOpacity={0.8}
             >
               <Text className="text-white text-2xl tracking-wider font-normal">
