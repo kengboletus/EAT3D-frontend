@@ -1,13 +1,44 @@
-import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import * as React from "react";
+import {
+  Dimensions,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useSharedValue } from "react-native-reanimated";
+import Carousel, {
+  ICarouselInstance,
+  Pagination,
+} from "react-native-reanimated-carousel";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Entypo from "react-native-vector-icons/Entypo";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+const data = [...new Array(6).keys()];
+const width = Dimensions.get("window").width;
+
 const home = () => {
+  const ref = React.useRef<ICarouselInstance>(null);
+  const progress = useSharedValue<number>(0);
+
+  const onPressPagination = (index: number) => {
+    ref.current?.scrollTo({
+      /**
+       * Calculate the difference between the current index and the target index
+       * to ensure that the carousel scrolls to the nearest index
+       */
+      count: index - progress.value,
+      animated: true,
+    });
+  };
+
   return (
-    <SafeAreaView className="bg-dark-300" edges={["top", "left", "right"]}>
+    <SafeAreaView
+      className="flex-1 bg-dark-300"
+      edges={["top", "left", "right"]}
+    >
       {/** Stationary top bar */}
       <View className="flex-col self-start h-44 bg-dark-300 justify-between items-center p-6">
         {/** horizontal navigation bar */}
@@ -53,6 +84,38 @@ const home = () => {
           <Text className="text-3xl font-bold text-dark-300">{"1,000"}</Text>
         </View>
       </View>
+      {/** Scroll area below top bar */}
+      <ScrollView className="flex-1 bg-white border-2 border-red-600">
+        <View className="border-b-2 border-light-300 p-8">
+          <Text className="text-3xl text-black pb-5">Promotions</Text>
+          <View className="flex-1 bg-dark-100 rounded-2xl">
+            <Carousel
+              ref={ref}
+              width={width - 44}
+              height={width / 2 - 44}
+              data={data}
+              onProgressChange={progress}
+              renderItem={({ index }) => (
+                <View className="flex-1 justify-center">
+                  <Text style={{ textAlign: "center", fontSize: 30 }}>
+                    {index}
+                  </Text>
+                </View>
+              )}
+            />
+            <Pagination.Basic
+              progress={progress}
+              data={data}
+              dotStyle={{
+                backgroundColor: "rgba(0,0,0,0.2)",
+                borderRadius: 50,
+              }}
+              containerStyle={{ gap: 5, marginTop: 0 }}
+              onPress={onPressPagination}
+            />
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
