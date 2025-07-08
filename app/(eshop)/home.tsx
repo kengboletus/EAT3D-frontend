@@ -1,7 +1,10 @@
+import { dummyProducts } from "@/assets/dummies/product";
+import ProductCard from "@/components/ProductCard";
+import { useRouter } from "expo-router";
 import * as React from "react";
 import {
   Dimensions,
-  ScrollView,
+  FlatList,
   Text,
   TouchableOpacity,
   View,
@@ -15,11 +18,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Entypo from "react-native-vector-icons/Entypo";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { ScrollView } from "react-native-virtualized-view";
 
-const data = [...new Array(6).keys()];
+const carouselData = [...new Array(6).keys()];
 const width = Dimensions.get("window").width;
+const recommended = dummyProducts;
+const latest = dummyProducts;
 
 const home = () => {
+  const router = useRouter;
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
 
@@ -41,7 +48,7 @@ const home = () => {
     >
       {/** Stationary top bar */}
       <View className="flex-col self-start h-44 bg-dark-300 justify-between items-center p-6">
-        {/** horizontal navigation bar */}
+        {/** User info & navigation buttons */}
         <View className="flex-row h-10 min-w-full bg-dark-300 ">
           <MaterialCommunityIcons
             className="self-start mt-0.5 mr-1.5"
@@ -50,12 +57,15 @@ const home = () => {
             size={32}
           />
           <Text className="text-xl text-white align-middle mt-1.5">
-            Hello, {"User"}!
+            Hello, {"User"}! {/** Load username here. */}
           </Text>
+          {/** Navigation buttons. */}
           <View className="flex-row justify-between items-center ml-auto w-48 h-full bg-dark-300 ">
+            {/** To Search. */}
             <TouchableOpacity className="h-full aspect-square bg-white rounded-full justify-center items-center">
               <Entypo name="magnifying-glass" size={16} color="#585858" />
             </TouchableOpacity>
+            {/** To notifications. */}
             <TouchableOpacity className="h-full aspect-square bg-white rounded-full justify-center items-center">
               <MaterialIcons
                 name="notifications-none"
@@ -63,6 +73,7 @@ const home = () => {
                 color="#585858"
               />
             </TouchableOpacity>
+            {/** To QR. */}
             <TouchableOpacity className="h-full aspect-square bg-white rounded-full justify-center items-center">
               <MaterialCommunityIcons
                 name="line-scan"
@@ -70,6 +81,7 @@ const home = () => {
                 color="#585858"
               />
             </TouchableOpacity>
+            {/** To favorites. */}
             <TouchableOpacity className="h-full aspect-square bg-white rounded-full justify-center items-center">
               <MaterialCommunityIcons
                 name="heart-outline"
@@ -79,21 +91,24 @@ const home = () => {
             </TouchableOpacity>
           </View>
         </View>
+        {/** Points. */}
         <View className="flex-row h-14 min-w-full justify-center items-center rounded-full mt-auto bg-white">
           <Text className="text-xl text-dark-300 mr-2">Points</Text>
           <Text className="text-3xl font-bold text-dark-300">{"1,000"}</Text>
         </View>
       </View>
       {/** Scroll area below top bar */}
-      <ScrollView className="flex-1 bg-white border-2 border-red-600">
+      <ScrollView className="flex-1 bg-white">
+        {/** Promotional banner section */}
         <View className="border-b-2 border-light-300 p-8">
-          <Text className="text-3xl text-black pb-5">Promotions</Text>
+          <Text className="text-2xl text-black pb-5">Promotions</Text>
+          {/** Carousel Section. */}
           <View className="flex-1 bg-dark-100 rounded-2xl">
             <Carousel
               ref={ref}
               width={width - 44}
               height={width / 2 - 44}
-              data={data}
+              data={carouselData}
               onProgressChange={progress}
               renderItem={({ index }) => (
                 <View className="flex-1 justify-center">
@@ -105,7 +120,7 @@ const home = () => {
             />
             <Pagination.Basic
               progress={progress}
-              data={data}
+              data={carouselData}
               dotStyle={{
                 backgroundColor: "rgba(0,0,0,0.2)",
                 borderRadius: 50,
@@ -114,6 +129,37 @@ const home = () => {
               onPress={onPressPagination}
             />
           </View>
+        </View>
+        {/** Product listing: Recommended */}
+        <View className="border-b border-light-300 p-8">
+          <Text className="text-2xl text-black pb-5">Recommended Products</Text>
+          <FlatList
+            data={recommended}
+            renderItem={({ item }) => <ProductCard {...item} />}
+            keyExtractor={(item) => item.productID.toString()}
+            numColumns={2}
+            columnWrapperStyle={{
+              justifyContent: "center",
+              gap: 15,
+              marginBottom: 15,
+            }}
+            scrollEnabled={false}
+          />
+        </View>
+        <View className="border-b border-light-300 p-8">
+          <Text className="text-2xl text-black pb-5">Latest Products</Text>
+          <FlatList
+            data={latest}
+            renderItem={({ item }) => <ProductCard {...item} />}
+            keyExtractor={(item) => item.productID.toString()}
+            numColumns={2}
+            columnWrapperStyle={{
+              justifyContent: "center",
+              gap: 15,
+              marginBottom: 15,
+            }}
+            scrollEnabled={false}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
