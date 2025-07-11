@@ -1,4 +1,4 @@
-import { TextInput, View } from "react-native";
+import { TextInput, TouchableOpacity, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 interface Props {
@@ -6,9 +6,16 @@ interface Props {
   value?: string;
   onChangeText?: (text: string) => void;
   onPress?: () => void;
+  onPressFilter?: () => void;
 }
 
-const SearchBar = ({ placeholder, value, onChangeText, onPress }: Props) => {
+const SearchBar = ({
+  placeholder,
+  value,
+  onChangeText,
+  onPress,
+  onPressFilter,
+}: Props) => {
   return (
     <View className="flex-row ml-2 flex-grow items-center border-b border-dark-300">
       <Ionicons
@@ -25,14 +32,16 @@ const SearchBar = ({ placeholder, value, onChangeText, onPress }: Props) => {
         className="flex-grow text-dark-300 ml-4"
         placeholderTextColor="#585858"
       />
-      <Ionicons
-        name="filter-sharp"
-        size={22}
-        color="#585858"
-        style={{
-          justifyContent: "flex-end",
-        }}
-      />
+      <TouchableOpacity onPress={onPressFilter}>
+        <Ionicons
+          name="filter-sharp"
+          size={22}
+          color="#585858"
+          style={{
+            justifyContent: "flex-end",
+          }}
+        />
+      </TouchableOpacity>
     </View>
   );
 };
