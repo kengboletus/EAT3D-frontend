@@ -41,6 +41,9 @@ const Search = () => {
                 placeholder="Search products"
                 onChangeText={(text: string) => setSearchQuery}
                 value={searchQuery}
+                onPressFilter={() => {
+                  Router.navigate("/(searchFilter)/filter");
+                }}
               />
             </View>
           </>
