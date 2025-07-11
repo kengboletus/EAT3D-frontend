@@ -5,13 +5,26 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 interface Props {
   onPress?: () => void;
   text?: string;
+  chevronColor?: string;
+  useArrow?: boolean;
+  iconSize?: number;
 }
 
-const HeaderLeftBackChevron = ({ onPress, text }: Props) => {
+const HeaderLeftBackChevron = ({
+  onPress,
+  text,
+  chevronColor,
+  useArrow,
+  iconSize,
+}: Props) => {
   return (
     <View className="flex-row">
       <TouchableOpacity onPress={onPress}>
-        <Ionicons name="chevron-back" size={28} color="white" />
+        <Ionicons
+          name={useArrow ? "arrow-back" : "chevron-back"}
+          size={iconSize ?? 28}
+          color={chevronColor ?? "white"}
+        />
       </TouchableOpacity>
       <Text className="ml-2 text-white text-lg font-bold">{text}</Text>
     </View>

@@ -26,7 +26,7 @@ const recommended = dummyProducts;
 const latest = dummyProducts;
 
 const home = () => {
-  const router = useRouter;
+  const router = useRouter();
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
 
@@ -62,7 +62,12 @@ const home = () => {
           {/** Navigation buttons. */}
           <View className="flex-row justify-between items-center ml-auto w-48 h-full bg-dark-300 ">
             {/** To Search. */}
-            <TouchableOpacity className="h-full aspect-square bg-white rounded-full justify-center items-center">
+            <TouchableOpacity
+              className="h-full aspect-square bg-white rounded-full justify-center items-center"
+              onPress={() => {
+                router.navigate("/(searchFilter)/search");
+              }}
+            >
               <Entypo name="magnifying-glass" size={16} color="#585858" />
             </TouchableOpacity>
             {/** To notifications. */}

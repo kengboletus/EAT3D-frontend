@@ -25,6 +25,7 @@ export default function RootLayout() {
         }}
       />
       <Stack.Screen name="(eshop)" options={{ headerShown: false }} />
+      <Stack.Screen name="(searchFilter)" options={{ headerShown: false }} />
     </Stack>
   );
 }

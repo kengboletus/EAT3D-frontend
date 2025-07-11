@@ -9,7 +9,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
  * tab bar itself. There is no support for tab bar animation in standard
  * react native, so look for library and fix this later.
  */
-const _layout = () => {
+const TabsLayout = () => {
   return (
     <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}
@@ -96,4 +96,4 @@ const _layout = () => {
   );
 };
 
-export default _layout;
+export default TabsLayout;

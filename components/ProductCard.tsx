@@ -8,7 +8,15 @@ import {
   View,
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-// Replace placeholder with loaded imagepath
+
+/** To do list:
+ *  - Replace placeholder with imagePath (Should be URL received from backend.)
+ *  - Add discount field to Product object interface as well as props here.
+ *  - Add functionality for favoriting and adding to shopping cart (onPress
+ *    functions).
+ *  - Passing correct props to product detail page. ( Fetch from backend again
+ *    at product details page according to productID? )
+ */
 
 const ProductCard = ({ productID, productName, price, imagePath }: Product) => {
   return (
