@@ -1,11 +1,12 @@
 import React from "react";
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList, View } from "react-native";
 
-const search = () => {
-  return <SafeAreaView></SafeAreaView>;
+const Search = () => {
+  return (
+    <View className="flex-1 bg-white">
+      <FlatList></FlatList>
+    </View>
+  );
 };
 
-export default search;
-
-const styles = StyleSheet.create({});
+export default Search;

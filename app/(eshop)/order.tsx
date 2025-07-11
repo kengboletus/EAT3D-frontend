@@ -1,14 +1,13 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const order = () => {
+const Order = () => {
   return (
     <View>
-      <Text>order</Text>
+      <Text>O</Text>
     </View>
   );
 };
 
-export default order;
-
+export default Order;
 const styles = StyleSheet.create({});

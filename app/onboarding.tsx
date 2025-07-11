@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 
-const onboarding = () => {
+const Onboarding = () => {
   const [nameText, setNameText] = useState("");
   const [emailText, setEmailText] = useState("");
   const [phoneText, setPhoneText] = useState("");
@@ -80,4 +80,4 @@ const onboarding = () => {
   );
 };
 
-export default onboarding;
+export default Onboarding;

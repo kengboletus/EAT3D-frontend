@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const account = () => {
+const Account = () => {
   return (
     <View>
       <Text>account</Text>
@@ -9,6 +9,6 @@ const account = () => {
   );
 };
 
-export default account;
+export default Account;
 
 const styles = StyleSheet.create({});

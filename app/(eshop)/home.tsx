@@ -25,7 +25,7 @@ const width = Dimensions.get("window").width;
 const recommended = dummyProducts;
 const latest = dummyProducts;
 
-const home = () => {
+const Home = () => {
   const router = useRouter();
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
@@ -171,4 +171,4 @@ const home = () => {
   );
 };
 
-export default home;
+export default Home;
