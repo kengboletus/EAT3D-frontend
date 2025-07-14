@@ -55,4 +55,4 @@ export const dummyProducts = [
   },
 ];
 
-export const dummySearches = ["Peaches", "Beans"];
+export const dummySearches = ["Peaches", "Beans", "Item", "ItemzzzzZZZZzzzzz"];
