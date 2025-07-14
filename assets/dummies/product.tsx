@@ -54,3 +54,5 @@ export const dummyProducts = [
     price: 70.0,
   },
 ];
+
+export const dummySearches = ["Peaches", "Beans"];
