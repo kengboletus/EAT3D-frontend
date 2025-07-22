@@ -148,7 +148,7 @@ const Search = () => {
               marginBottom: 13,
             }}
             ListHeaderComponent={
-              <Text className="text-2xl">Recent Searches</Text>
+              <Text className="text-2xl">Popular Searches</Text>
             }
             ListHeaderComponentStyle={{
               flex: 1,

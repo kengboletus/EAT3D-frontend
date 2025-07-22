@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 const Onboarding = () => {
-  const [nameText, setNameText] = useState("");
+  const [usernameText, setUsernameText] = useState("");
   const [emailText, setEmailText] = useState("");
   const [phoneText, setPhoneText] = useState("");
   const [passwordText, setPasswordText] = useState("");
@@ -28,10 +28,10 @@ const Onboarding = () => {
           <Text className="text-4xl text-light-100">Become a member!</Text>
           {/* Name text box */}
           <LabelledBoxedTextInput
-            placeholder="John Doe"
-            value={nameText}
-            onChangeText={setNameText}
-            label="Full Name"
+            placeholder="myUsername"
+            value={usernameText}
+            onChangeText={setUsernameText}
+            label="username"
           />
           {/* Email text box */}
           <LabelledBoxedTextInput
