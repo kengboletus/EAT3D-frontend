@@ -4,11 +4,12 @@ export async function save(key: string, value: string) {
   await SecureStore.setItemAsync(key, value);
 }
 
-export async function getValueFor(key: string) {
+export async function getValueFor(key: string): Promise<string | null> {
   let result = await SecureStore.getItemAsync(key);
   if (result) {
-    alert("🔐 Here's your value 🔐 \n" + result);
+    console.log("🔐 Here's your value 🔐 \n" + result);
   } else {
-    alert("No values stored under that key.");
+    console.log("No values stored under that key.");
   }
+  return result;
 }

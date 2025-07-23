@@ -13,9 +13,9 @@ import {
 import * as Yup from "yup";
 
 import LabelledBoxedTextInput from "@/components/LabelledBoxedTextInput";
-import { useRouter } from "expo-router";
-import { api } from "../utils/api";
-import { save } from "../utils/secureStore";
+import { Redirect, useRouter } from "expo-router";
+import { useAuth } from "../../context/authContext";
+import { api } from "../../utils/api";
 
 interface FormValues {
   username: string;
@@ -46,6 +46,8 @@ const SignupSchema = Yup.object().shape({
 const Router = useRouter();
 
 const Onboarding: React.FC = () => {
+  const { user, login } = useAuth();
+
   const handleFormSubmit = async (
     values: FormValues,
     actions: FormikHelpers<FormValues>
@@ -99,11 +101,8 @@ const Onboarding: React.FC = () => {
       console.log("User registered:", data);
 
       // Store accessToken and refreshToken in secureStorage.
-      save("refreshToken", data.refreshToken);
-      save("accessToken", data.accessToken);
-
-      // Redirect to home page
-      Router.navigate("/(eshop)/home");
+      await login(data.accessToken, data.refreshToken);
+      if (user) return <Redirect href="/(eshop)/home" />;
       // actions.resetForm();
     } catch (err) {
       console.error("Network or unexpected error:", err);

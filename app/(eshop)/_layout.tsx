@@ -1,8 +1,10 @@
 import CustomTabBar from "@/components/CustomTabBar";
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import React from "react";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import SplashScreen from "../../components/SplashScreen";
+import { useAuth } from "../../context/authContext";
 
 /**
  * Fade animation only applies to the screen behind the tab bar and not the
@@ -10,6 +12,15 @@ import Ionicons from "react-native-vector-icons/Ionicons";
  * react native, so look for library and fix this later.
  */
 const TabsLayout = () => {
+  const { user, isLoading } = useAuth();
+
+  // Show splash while loading auth
+  if (isLoading) return <SplashScreen />;
+
+  // If user is NOT authenticated, redirect to login
+  if (!user)
+    return <Redirect href="../../(auth)/logIn" relativeToDirectory={true} />;
+
   return (
     <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}
