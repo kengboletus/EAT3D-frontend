@@ -13,7 +13,9 @@ import {
 import * as Yup from "yup";
 
 import LabelledBoxedTextInput from "@/components/LabelledBoxedTextInput";
-import { api } from "../api/api";
+import { useRouter } from "expo-router";
+import { api } from "../utils/api";
+import { save } from "../utils/secureStore";
 
 interface FormValues {
   username: string;
@@ -41,17 +43,21 @@ const SignupSchema = Yup.object().shape({
     .required("Required"),
 });
 
+const Router = useRouter();
+
 const Onboarding: React.FC = () => {
   const handleFormSubmit = async (
     values: FormValues,
     actions: FormikHelpers<FormValues>
   ) => {
     try {
+      // Runtime check for URL environment variable.
       if (!process.env.EXPO_PUBLIC_API_URL) {
         throw Error("assign API_URL in env.");
       }
-      // Example: Replace with actual API endpoint
+      // Debug: Check full URL
       console.log(api + "/api/v1/users/");
+      // Request to signUp endpoint.
       const response = await fetch(api + "/api/v1/users/", {
         method: "POST",
         headers: {
@@ -60,6 +66,7 @@ const Onboarding: React.FC = () => {
         body: JSON.stringify(values),
       });
 
+      // Handling errors.
       if (!response.ok) {
         const data = await response.json();
 
@@ -73,21 +80,31 @@ const Onboarding: React.FC = () => {
             );
           });
         } else if (data.message) {
-          // Handle non-field-specific error (optional)
+          // Handle non-field-specific error
           console.error("Server error:", data.message);
-          // You could optionally show a general toast or banner here
         }
 
         actions.setSubmitting(false);
         return;
       }
 
-      // ✅ Success
+      /** Success: Structure of retrieved json:
+       *  {
+       *    message: "Signup successful",
+       *    accessToken: token,
+       *    refreshToken: token
+       *  }
+       */
       const data = await response.json();
       console.log("User registered:", data);
 
-      // Optionally reset the form or navigate
-      actions.resetForm();
+      // Store accessToken and refreshToken in secureStorage.
+      save("refreshToken", data.refreshToken);
+      save("accessToken", data.accessToken);
+
+      // Redirect to home page
+      Router.navigate("/(eshop)/home");
+      // actions.resetForm();
     } catch (err) {
       console.error("Network or unexpected error:", err);
       // Optionally display a user-friendly message to the user

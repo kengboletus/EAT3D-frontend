@@ -1,7 +1,9 @@
 import Constants from "expo-constants";
 
 const getApiBaseUrl = () => {
+  // __DEV__ is a React Native global variable that indicates a launch in dev mode.
   const isDev = __DEV__;
+  // Retrieves development host URI.
   const devOrigin = Constants.expoConfig?.hostUri;
 
   if (isDev && devOrigin) {
