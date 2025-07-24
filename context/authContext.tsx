@@ -37,9 +37,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const refreshToken = await getSecureItem("refreshToken");
       //debug
       console.log(
-        `Loading tokens...\naccess: ${accessToken && "none"}\nrefresh: ${
-          refreshToken && "none"
-        }`
+        `Loading tokens...\naccess: ${accessToken}\nrefresh: ${refreshToken}`
       );
       //end debug
       if (accessToken && refreshToken) {
@@ -60,33 +58,51 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Clear both tokens
   const logout = async () => {
-    await deleteSecureItem("accessToken");
-    await deleteSecureItem("refreshToken");
-    // debug
-    console.log("Logging out...");
-    setUser(null);
+    try {
+      console.log("Revoking tokens...");
+      const refreshToken = await getSecureItem("refreshToken");
+      if (refreshToken) {
+        await fetch(api + "/api/v1/tokens/revoke", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refreshToken }),
+        });
+      }
+    } catch (error) {
+      console.error("Error revoking token on logout:", error);
+    } finally {
+      await deleteSecureItem("accessToken");
+      await deleteSecureItem("refreshToken");
+      setUser(null);
+    }
   };
 
   // Try to refresh access token using the refresh token
   const refresh = async () => {
-    const refreshToken = await getSecureItem("refreshToken");
-    // Don't even call the API if there isn't a refresh token.
-    // Shouldn't have been allowed to log in the first place without a refresh token.
-    if (!refreshToken) return;
+    try {
+      console.log("Refreshing token...");
+      const refreshToken = await getSecureItem("refreshToken");
+      if (!refreshToken) {
+        await logout();
+        return;
+      }
 
-    const response = await fetch(api + "/api/v1/tokens/refresh", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken: refreshToken }),
-    });
-    // Success
-    if (response.ok) {
+      const response = await fetch(api + "/api/v1/tokens/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!response.ok) {
+        await logout();
+        return;
+      }
+
       const { accessToken } = await response.json();
       await setSecureItem("accessToken", accessToken);
       setUser((prev) => (prev ? { ...prev, accessToken } : null));
-    }
-    // Failure (invalid refresh token)
-    else {
+    } catch (error) {
+      console.error("Failed to refresh token:", error);
       await logout();
     }
   };

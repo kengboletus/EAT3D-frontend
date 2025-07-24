@@ -1,10 +1,19 @@
+import { useRouter } from "expo-router";
 import { Formik, FormikHelpers } from "formik";
-import { jwtDecode } from "jwt-decode";
-import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useMemo, useState } from "react";
+import {
+  Keyboard,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import * as Yup from "yup";
+import { createAuthFetch } from "../../api/authFetch";
 import { useAuth } from "../../context/authContext";
-import { api } from "../../utils/api";
+
+const router = useRouter();
 
 interface UserData {
   id: number;
@@ -13,146 +22,137 @@ interface UserData {
   email: string;
   created_at: string;
 }
-interface Payload {
-  userId: number;
-  iat: number;
-  exp: number;
-}
+
 interface FormValues {
   id: string;
 }
 
 const Account = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
-  const { refresh, logout, user } = useAuth();
-  // This should just set the user data state.
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const { user, refresh, logout } = useAuth();
+
+  // Memoized authFetch instance, uses current auth state & methods
+  const authFetch = useMemo(
+    () => createAuthFetch({ user, refresh, logout }),
+    [user, refresh, logout]
+  );
+
   const handleFormSubmit = async (
     values: FormValues,
     actions: FormikHelpers<FormValues>
   ) => {
+    setErrorMsg(null);
+    setUserData(null);
+
     try {
-      // We are certain the accessToken is a string here because account is a protected screen.
-      const payload = jwtDecode<Payload>(user?.accessToken as string);
-      // Client-side access token expiration check.
-      const unixSeconds = Math.floor(Date.now() / 1000);
-      console.log(
-        "currentTime: ",
-        unixSeconds,
-        "\n",
-        "payloadExp: ",
-        payload.exp
-      ); // e.g. 1721809505
-      if (payload.exp < unixSeconds) {
-        console.log("Running refresh");
-        await refresh();
-      }
-      // Make the call. Should have valid tokens at this point.
-      if (!api) {
-        throw new Error("Missing API URL");
-      }
-      const response = await fetch(api + `/api/v1/users/${values.id}`, {
+      // Perform the API request with authFetch which manages tokens internally
+      const response = await authFetch(`/api/v1/users/${values.id}`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.accessToken}`,
-        },
       });
-      //
-      if (!response.ok) {
-        const { message } = await response.json();
-        console.log("Server error: ", message);
+
+      // The authFetch delegates to apiClient which already parses JSON
+      // So response here is the parsed JSON object
+      // Assuming your API returns { message, data }
+      const { message, data } = response;
+
+      if (!data) {
+        setErrorMsg(message || "User not found");
+        actions.setSubmitting(false);
         return;
       }
-      // Success
-      const { message, data } = await response.json();
-      console.log("get users: ", message);
-      console.log("data: ", data);
+
       setUserData(data);
-    } catch (error) {
-      console.log("get users: ", error);
+      actions.setSubmitting(false);
+    } catch (error: any) {
+      setErrorMsg(
+        error.message || "An unexpected error occurred. Please try again."
+      );
+      actions.setSubmitting(false);
     }
   };
 
   return (
-    <View className="flex-1 justify-center items-center">
-      <View className="flex-col justify-center items-center">
-        <Formik
-          initialValues={{ id: "" }}
-          validationSchema={Yup.object().shape({
-            id: Yup.string()
-              .matches(/^\d+$/, "ID must be in digits.")
-              .required("Required"),
-          })}
-          onSubmit={handleFormSubmit}
-        >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-            isSubmitting,
-          }) => (
-            <>
-              <TextInput
-                placeholder={"Enter userId here."}
-                value={values.id}
-                onChangeText={handleChange("id")}
-                onBlur={handleBlur("id")}
-                placeholderTextColor="#8D8D8D"
-                autoCapitalize="none"
-                multiline={false}
-                className="mt-20 w-40 h-12 text-dark-300 border"
-              />
-              <TouchableOpacity
-                className="w-40 h-12 rounded-xl border border-black items-center justify-center"
-                onPress={() => handleSubmit()}
-                activeOpacity={0.8}
-                disabled={isSubmitting}
-              >
-                <Text className="text-black text-2xl tracking-wider font-normal">
-                  {isSubmitting ? "Querying..." : "Get user."}
-                </Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </Formik>
-        <View className="flex-1">
-          <Text className="text-black text-2xl tracking-wider font-normal">
-            User data
-          </Text>
-          {userData && (
-            <View className="flex-1">
-              <Text className="text-black text-2xl tracking-wider font-normal">
-                {`id: ${userData.id}`}
-              </Text>
-              <Text className="text-black text-2xl tracking-wider font-normal">
-                {`username: ${userData.username}`}
-              </Text>
-              <Text className="text-black text-2xl tracking-wider font-normal">
-                {`phone: ${userData.phone}`}
-              </Text>
-              <Text className="text-black text-2xl tracking-wider font-normal">
-                {`email: ${userData.email}`}
-              </Text>
-              <Text className="text-black text-2xl tracking-wider font-normal">
-                {`created_at: ${userData.created_at}`}
-              </Text>
-            </View>
-          )}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View className="flex-1 justify-center items-center p-6">
+        <View className="w-full max-w-md flex-col items-center">
+          <Formik
+            initialValues={{ id: "" }}
+            validationSchema={Yup.object().shape({
+              id: Yup.string()
+                .matches(/^\d+$/, "ID must be in digits.")
+                .required("Required"),
+            })}
+            onSubmit={handleFormSubmit}
+          >
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+              isSubmitting,
+            }) => (
+              <>
+                <TextInput
+                  value={values.id}
+                  onChangeText={handleChange("id")}
+                  onBlur={handleBlur("id")}
+                  autoCapitalize="none"
+                  multiline={false}
+                  placeholder="Enter user ID here"
+                  placeholderTextColor="#a0a0a0"
+                  className="mt-20 w-full h-12 rounded-md border border-gray-300 px-4 m-2 text-base text-black"
+                />
+                {touched.id && errors.id && (
+                  <Text className="text-red-600 text-sm mt-1">{errors.id}</Text>
+                )}
+                {errorMsg && (
+                  <Text className="text-red-600 text-sm mt-1">{errorMsg}</Text>
+                )}
+                <TouchableOpacity
+                  className={`w-full h-12 rounded-lg flex justify-center items-center ${
+                    isSubmitting ? "bg-gray-400" : "bg-primary"
+                  }`}
+                  onPress={() => handleSubmit()}
+                  activeOpacity={0.7}
+                  disabled={isSubmitting}
+                >
+                  <Text className="text-white text-lg font-semibold">
+                    {isSubmitting ? "Querying..." : "Get User"}
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </Formik>
+          <View className="bg-gray-300 rounded-lg p-4 mt-6 w-full">
+            <Text className="text-lg font-bold mb-2">User Data</Text>
+            {userData && (
+              <>
+                <Text>ID: {userData.id}</Text>
+                <Text>Username: {userData.username}</Text>
+                <Text>Phone: {userData.phone}</Text>
+                <Text>Email: {userData.email}</Text>
+                <Text>Created At: {userData.created_at}</Text>
+              </>
+            )}
+          </View>
+          <TouchableOpacity
+            className="w-40 h-12 rounded-xl border border-black items-center justify-center mt-6"
+            onPress={async () => {
+              await logout();
+              router.replace("/(auth)/logIn");
+            }}
+            activeOpacity={0.8}
+          >
+            <Text className="text-black text-2xl tracking-wider font-normal">
+              Sign out
+            </Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          className="w-40 h-12 rounded-xl border border-black items-center justify-center"
-          onPress={logout}
-          activeOpacity={0.8}
-        >
-          <Text className="text-black text-2xl tracking-wider font-normal">
-            Sign out
-          </Text>
-        </TouchableOpacity>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
