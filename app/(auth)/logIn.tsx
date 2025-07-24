@@ -43,7 +43,7 @@ export default function LogIn() {
     actions: FormikHelpers<FormValues>
   ) => {
     try {
-      if (!process.env.EXPO_PUBLIC_API_URL) {
+      if (!api) {
         throw new Error("Missing API URL");
       }
 

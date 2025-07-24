@@ -36,7 +36,11 @@ const initialValues: FormValues = {
 const SignupSchema = Yup.object().shape({
   username: Yup.string().min(3, "Too short").required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
-  phone: Yup.string().min(8).max(8).required("Required"),
+  phone: Yup.string()
+    .matches(/^\d+$/, "Phone number must contain only digits")
+    .min(8)
+    .max(8)
+    .required("Required"),
   password: Yup.string().min(8, "Minimum 8 characters").required("Required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
@@ -53,9 +57,9 @@ const Onboarding: React.FC = () => {
     actions: FormikHelpers<FormValues>
   ) => {
     try {
-      // Runtime check for URL environment variable.
-      if (!process.env.EXPO_PUBLIC_API_URL) {
-        throw Error("assign API_URL in env.");
+      // Runtime check for API URL existence.
+      if (!api) {
+        throw Error("No api.");
       }
       // Debug: Check full URL
       console.log(api + "/api/v1/users/");

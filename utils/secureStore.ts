@@ -1,15 +1,34 @@
 import * as SecureStore from "expo-secure-store";
 
-export async function save(key: string, value: string) {
-  await SecureStore.setItemAsync(key, value);
-}
+/**
+ * Set a value for a given key in SecureStore.
+ */
+export const setSecureItem = async (
+  key: string,
+  value: string
+): Promise<void> => {
+  await SecureStore.setItemAsync(key, value, {
+    keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+  });
+};
 
-export async function getValueFor(key: string): Promise<string | null> {
-  let result = await SecureStore.getItemAsync(key);
-  if (result) {
-    console.log("🔐 Here's your value 🔐 \n" + result);
-  } else {
-    console.log("No values stored under that key.");
-  }
-  return result;
-}
+/**
+ * Get a value for a given key from SecureStore.
+ */
+export const getSecureItem = async (key: string): Promise<string | null> => {
+  return await SecureStore.getItemAsync(key);
+};
+
+/**
+ * Delete a key from SecureStore.
+ */
+export const deleteSecureItem = async (key: string): Promise<void> => {
+  await SecureStore.deleteItemAsync(key);
+};
+
+/**
+ * Bulk clear a list of known keys from SecureStore.
+ */
+export const clearSecureItems = async (keys: string[]): Promise<void> => {
+  await Promise.all(keys.map(deleteSecureItem));
+};

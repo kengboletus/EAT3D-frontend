@@ -1,4 +1,3 @@
-import * as SecureStore from "expo-secure-store";
 import React, {
   ReactNode,
   createContext,
@@ -7,7 +6,11 @@ import React, {
   useState,
 } from "react";
 import { api } from "../utils/api";
-import { getValueFor } from "../utils/secureStore";
+import {
+  deleteSecureItem,
+  getSecureItem,
+  setSecureItem,
+} from "../utils/secureStore";
 
 interface User {
   accessToken: string;
@@ -30,12 +33,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Load both tokens on startup
   useEffect(() => {
     (async () => {
-      const accessToken = await SecureStore.getItemAsync("accessToken");
-      const refreshToken = await SecureStore.getItemAsync("refreshToken");
+      const accessToken = await getSecureItem("accessToken");
+      const refreshToken = await getSecureItem("refreshToken");
       //debug
-      console.log("Loading tokens...");
-      getValueFor("accessToken");
-      getValueFor("refreshToken");
+      console.log(
+        `Loading tokens...\naccess: ${accessToken && "none"}\nrefresh: ${
+          refreshToken && "none"
+        }`
+      );
       //end debug
       if (accessToken && refreshToken) {
         setUser({ accessToken });
@@ -46,28 +51,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Save both tokens
   const login = async (accessToken: string, refreshToken: string) => {
-    await SecureStore.setItemAsync("accessToken", accessToken);
-    await SecureStore.setItemAsync("refreshToken", refreshToken);
+    await setSecureItem("accessToken", accessToken);
+    await setSecureItem("refreshToken", refreshToken);
     // debug
-    console.log("Logging in...");
-    getValueFor("accessToken");
-    getValueFor("refreshToken");
+    console.log(`Logging in...`);
     setUser({ accessToken });
   };
 
   // Clear both tokens
   const logout = async () => {
-    await SecureStore.deleteItemAsync("accessToken");
-    await SecureStore.deleteItemAsync("refreshToken");
+    await deleteSecureItem("accessToken");
+    await deleteSecureItem("refreshToken");
+    // debug
     console.log("Logging out...");
-    getValueFor("accessToken");
-    getValueFor("refreshToken");
     setUser(null);
   };
 
   // Try to refresh access token using the refresh token
   const refresh = async () => {
-    const refreshToken = await SecureStore.getItemAsync("refresh_token");
+    const refreshToken = await getSecureItem("refreshToken");
+    // Don't even call the API if there isn't a refresh token.
+    // Shouldn't have been allowed to log in the first place without a refresh token.
     if (!refreshToken) return;
 
     const response = await fetch(api + "/api/v1/tokens/refresh", {
@@ -78,7 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Success
     if (response.ok) {
       const { accessToken } = await response.json();
-      await SecureStore.setItemAsync("access_token", accessToken);
+      await setSecureItem("accessToken", accessToken);
       setUser((prev) => (prev ? { ...prev, accessToken } : null));
     }
     // Failure (invalid refresh token)
