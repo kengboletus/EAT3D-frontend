@@ -117,7 +117,7 @@ export default function LogIn() {
                 value={values.email}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
-                label="Email Address / Phone Number"
+                label="Email Address"
                 error={touched.email && errors.email}
               />
 

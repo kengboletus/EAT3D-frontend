@@ -9,10 +9,10 @@ const Router = router;
 export default function AuthLayout() {
   const { user, isLoading } = useAuth();
 
-  // ✅ 1. Show splash while loading auth state
+  // 1. Show splash while loading auth state
   if (isLoading) return <SplashScreen />;
 
-  // ✅ 2. Redirect if already authenticated (from login or onboarding)
+  // 2. Redirect if already authenticated (from login or onboarding)
   if (user) {
     return <Redirect href="/(eshop)/home" />;
   }

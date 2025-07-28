@@ -17,10 +17,12 @@ export function createAuthFetch({ user, refresh, logout }: AuthFetchParams) {
 
   // Validate and refresh token if expired
   async function getValidAccessToken(): Promise<string | null> {
+    // Get the access token from the accepted user object OR from secureStorage.
     let accessToken = user?.accessToken ?? (await getSecureItem("accessToken"));
 
     if (!accessToken) return null;
 
+    // If the access token exists, check it's expiration (Or if it even has exp field.)
     const decoded = decodeJwt(accessToken);
     const now = Math.floor(Date.now() / 1000);
 

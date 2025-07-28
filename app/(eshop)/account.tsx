@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { Formik, FormikHelpers } from "formik";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   Keyboard,
   Text,
@@ -10,8 +10,8 @@ import {
   View,
 } from "react-native";
 import * as Yup from "yup";
-import { createAuthFetch } from "../../api/authFetch";
 import { useAuth } from "../../context/authContext";
+import { useAuthFetch } from "../../hooks/useAuthFetch";
 
 const router = useRouter();
 
@@ -33,10 +33,7 @@ const Account = () => {
   const { user, refresh, logout } = useAuth();
 
   // Memoized authFetch instance, uses current auth state & methods
-  const authFetch = useMemo(
-    () => createAuthFetch({ user, refresh, logout }),
-    [user, refresh, logout]
-  );
+  const authFetch = useAuthFetch();
 
   const handleFormSubmit = async (
     values: FormValues,
