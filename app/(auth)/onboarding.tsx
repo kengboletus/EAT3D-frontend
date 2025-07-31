@@ -120,11 +120,15 @@ const Onboarding: React.FC = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
         behavior="padding"
-        className="flex-1 justify-center items-center bg-primary"
+        className="flex-1 justify-center items-center bg-white"
       >
+
         <View className="flex-col justify-center items-center w-80">
           {/* Logo */}
-          <Image />
+          <Image         
+          source={ require("../../assets/images/Eat3D logo_4c.png 2.png")} 
+          className=""
+          />
           <Text className="text-4xl text-light-100">Become a member!</Text>
 
           <Formik
@@ -191,12 +195,12 @@ const Onboarding: React.FC = () => {
 
                 <View className="flex-row items-center py-8">
                   <TouchableOpacity
-                    className="w-full h-12 rounded-xl border border-white items-center justify-center"
+                    className="w-full h-12 rounded-xl border border-dark-300 items-center justify-center"
                     onPress={() => handleSubmit()}
                     activeOpacity={0.8}
                     disabled={isSubmitting}
                   >
-                    <Text className="text-white text-2xl tracking-wider font-normal">
+                    <Text className="text-dark-200 text-2xl tracking-wider font-normal">
                       {isSubmitting ? "Signing up..." : "Sign up"}
                     </Text>
                   </TouchableOpacity>

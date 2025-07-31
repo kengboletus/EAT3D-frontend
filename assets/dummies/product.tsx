@@ -56,3 +56,23 @@ export const dummyProducts = [
 ];
 
 export const dummySearches = ["Peaches", "Beans", "Item", "ItemzzzzZZZZzzzzz"];
+
+export type Product = {
+  id: string;
+  name: string;
+  image: string;
+  available: boolean;
+  price: number;
+};
+
+export const vendingMachineProducts: { [machineId: string]: Product[] } = {
+  "1": [
+    { id: "1", name: "Coke", image: "https://i.postimg.cc/CLq7GtzJ/Cocacola.jpg", available: true, price: 10 },
+    { id: "2", name: "Sprite", image: "https://i.postimg.cc/gkFSTm91/Sprite.jpg", available: false, price: 9 },
+  ],
+  "2": [
+    { id: "3", name: "Water", image: "https://i.postimg.cc/3x3QzSGq/machine-product-1.jpg", available: true, price: 8 },
+    { id: "4", name: "Chips", image: "https://i.postimg.cc/kXKZJDFn/potatochips.png", available: true, price: 12 },
+  ],
+};
+

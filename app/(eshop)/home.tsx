@@ -43,13 +43,13 @@ const Home = () => {
 
   return (
     <SafeAreaView
-      className="flex-1 bg-dark-300"
+      className="flex-1 bg-green"
       edges={["top", "left", "right"]}
     >
       {/** Stationary top bar */}
-      <View className="flex-col self-start h-44 bg-dark-300 justify-between items-center p-6">
+      <View className="flex-col self-start h-44 bg-green justify-between items-center p-6">
         {/** User info & navigation buttons */}
-        <View className="flex-row h-10 min-w-full bg-dark-300 ">
+        <View className="flex-row h-10 min-w-full bg-green ">
           <MaterialCommunityIcons
             className="self-start mt-0.5 mr-1.5"
             name="account-circle-outline"
@@ -60,7 +60,7 @@ const Home = () => {
             Hello, {"User"}! {/** Load username here. */}
           </Text>
           {/** Navigation buttons. */}
-          <View className="flex-row justify-between items-center ml-auto w-48 h-full bg-dark-300 ">
+          <View className="flex-row justify-between items-center ml-auto w-48 h-full bg-green ">
             {/** To Search. */}
             <TouchableOpacity
               className="h-full aspect-square bg-white rounded-full justify-center items-center"

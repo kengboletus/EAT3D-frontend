@@ -9,10 +9,10 @@ const Router = router;
 export default function AuthLayout() {
   const { user, isLoading } = useAuth();
 
-  // 1. Show splash while loading auth state
+  // ✅ 1. Show splash while loading auth state
   if (isLoading) return <SplashScreen />;
 
-  // 2. Redirect if already authenticated (from login or onboarding)
+  // ✅ 2. Redirect if already authenticated (from login or onboarding)
   if (user) {
     return <Redirect href="/(eshop)/home" />;
   }
@@ -27,12 +27,24 @@ export default function AuthLayout() {
         name="onboarding"
         options={{
           headerLeft: () => (
-            <HeaderLeftBackChevron onPress={Router.back} text="Log in" />
+            <HeaderLeftBackChevron onPress={Router.back} text="Login" />
           ),
-          headerStyle: { backgroundColor: "#585858" },
+        
           headerShadowVisible: false,
           headerTitle: "",
         }}
+      />
+      <Stack.Screen
+        name="loadingpage"
+        options={{
+          headerShown: false,
+        }}  
+      />
+      <Stack.Screen
+        name="logIn"
+        options={{
+          headerShown: false,
+        }}  
       />
     </Stack>
   );
