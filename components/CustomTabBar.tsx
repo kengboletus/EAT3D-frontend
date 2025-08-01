@@ -1,6 +1,6 @@
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // Need to create big button in the middle.
 export default function CustomTabBar({
@@ -27,7 +27,10 @@ export default function CustomTabBar({
                 }}
               >
                 {/** Place logo here. */}
-                <Image />
+                <Image
+                        source={ require("../assets/images/homeButton.png")} 
+                        style={styles.homeButton}
+                />
               </TouchableOpacity>
             </View>
           );
@@ -74,3 +77,17 @@ export default function CustomTabBar({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+ 
+  homeButton: {
+    width: 90,
+    height:90,
+  }
+}
+)
+
+
+
+
+

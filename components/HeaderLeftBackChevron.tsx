@@ -22,11 +22,11 @@ const HeaderLeftBackChevron = ({
       <TouchableOpacity onPress={onPress}>
         <Ionicons
           name={useArrow ? "arrow-back" : "chevron-back"}
-          size={iconSize ?? 28}
-          color={chevronColor ?? "white"}
+          size={iconSize ?? 22}
+          color={chevronColor ?? "text-dark-200"}
         />
       </TouchableOpacity>
-      <Text className="ml-2 text-white text-lg font-bold">{text}</Text>
+      <Text className=" text-dark-200 text-lg font-bold">{text}</Text>
     </View>
   );
 };

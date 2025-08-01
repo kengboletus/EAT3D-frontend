@@ -72,9 +72,10 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="qr"
+        name="VendingMachineSelection"
         options={{
-          title: "QR",
+          title: "VendingMachineSelection",
+
         }}
       />
       <Tabs.Screen
