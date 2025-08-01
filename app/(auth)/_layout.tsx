@@ -29,22 +29,16 @@ export default function AuthLayout() {
           headerLeft: () => (
             <HeaderLeftBackChevron onPress={Router.back} text="Login" />
           ),
-        
+
           headerShadowVisible: false,
           headerTitle: "",
         }}
       />
       <Stack.Screen
-        name="loadingpage"
-        options={{
-          headerShown: false,
-        }}  
-      />
-      <Stack.Screen
         name="logIn"
         options={{
           headerShown: false,
-        }}  
+        }}
       />
     </Stack>
   );
