@@ -35,12 +35,6 @@ export default function AuthLayout() {
         }}
       />
       <Stack.Screen
-        name="loadingpage"
-        options={{
-          headerShown: false,
-        }}  
-      />
-      <Stack.Screen
         name="logIn"
         options={{
           headerShown: false,
