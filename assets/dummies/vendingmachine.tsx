@@ -2,7 +2,7 @@ export type VendingMachine = {
   id: string;
   name: string;
   location: string;
-    image?: string; // Optional image property
+  image?: string; // Optional image property
   status: "online" | "offline";
 };
 

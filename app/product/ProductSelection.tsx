@@ -1,27 +1,69 @@
-import type { Product } from "@/assets/dummies/product";
-import { vendingMachineProducts } from "@/assets/dummies/product";
+import type { UnifiedInventoryItem } from "@/assets/dummies/product";
+import SplashScreenLoading from "@/components/SplashScreenLoading";
 import VMProducts from "@/components/VMProducts";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Modal, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  Modal,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useAuthFetch } from "../../hooks/useAuthFetch";
 
-
-const ProductSelectionScreen = ({ }) => {
+const ProductSelectionScreen = ({}) => {
   const router = useRouter();
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] =
+    useState<UnifiedInventoryItem | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [inventory, setInventory] = useState<UnifiedInventoryItem[]>([]);
 
+  const authFetch = useAuthFetch();
 
   const { machineId } = useLocalSearchParams();
-  const products : Product[] = vendingMachineProducts[machineId as string] || [];
-   
-    useEffect(() => {
+
+  useEffect(() => {
     if (!machineId) {
-      console.warn('Machine ID is missing');
+      console.warn("Machine ID is missing");
     }
   }, [machineId]);
 
-  const handleProductPress = (Product: Product) => {
+  useEffect(() => {
+    // define a fetch function because effect functions can't be async
+    const fetchInventory = async () => {
+      setLoading(true);
+      setErrorMsg(null);
+      try {
+        const response = await authFetch(`/api/v1/vms/${machineId}/inventory`, {
+          method: "GET",
+        });
+        const { message, data } = response;
+        if (!data) {
+          setErrorMsg(message || "VMs not found");
+          setInventory([]);
+        } else {
+          setInventory(data);
+        }
+      } catch (error: any) {
+        setErrorMsg(
+          error.message || "An unexpected error occurred. Please try again."
+        );
+        setInventory([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInventory();
+  }, [authFetch]); // dependency array
+
+  const handleProductPress = (Product: UnifiedInventoryItem) => {
     setSelectedProduct(Product);
     setModalVisible(true);
   };
@@ -31,23 +73,29 @@ const ProductSelectionScreen = ({ }) => {
     setSelectedProduct(null);
   };
 
+  if (loading) {
+    return <SplashScreenLoading />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Select Product</Text>
-        <TouchableOpacity style={styles.cancelBtn} onPress={() => router.replace("/")}>
+        <TouchableOpacity
+          style={styles.cancelBtn}
+          onPress={() => router.replace("/")}
+        >
           <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
       </View>
       <FlatList
-        data={products}
+        data={inventory}
         numColumns={3}
-        keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <VMProducts
             name={item.name}
             image={item.image}
-            available={item.available}
+            available={item.quantity > 0}
             price={item.price}
             onPress={() => handleProductPress(item)}
           />
@@ -68,23 +116,41 @@ const ProductSelectionScreen = ({ }) => {
           <View style={styles.modalContent}>
             {selectedProduct && (
               <>
-                <Image source={{ uri: selectedProduct.image }} style={styles.modalImage} />
+                <Image
+                  source={{ uri: selectedProduct.image }}
+                  style={styles.modalImage}
+                />
                 <Text style={styles.modalName}>{selectedProduct.name}</Text>
-                <Text style={styles.modalPrice}>${selectedProduct.price.toFixed(2)}</Text>
-                <Text style={[styles.modalAvailability, { color: selectedProduct.available ? "#22c55e" : "#ef4444" }]}>
-                  {selectedProduct.available ? "Available" : "Sold Out"}
+                <Text style={styles.modalPrice}>
+                  ${selectedProduct.price.toFixed(2)}
+                </Text>
+                <Text
+                  style={[
+                    styles.modalAvailability,
+                    {
+                      color:
+                        selectedProduct.quantity > 0 ? "#22c55e" : "#ef4444",
+                    },
+                  ]}
+                >
+                  {selectedProduct.quantity > 0 ? "Available" : "Sold Out"}
                 </Text>
                 <TouchableOpacity
                   style={styles.pickupBtn}
-                  disabled={!selectedProduct.available}
+                  disabled={!(selectedProduct.quantity > 0)}
                   onPress={() => {
                     // TODO: Implement pick up code generation logic
                     alert("Pick up code generated!");
                   }}
                 >
-                  <Text style={styles.pickupBtnText}>Generate Pick Up Code</Text>
+                  <Text style={styles.pickupBtnText}>
+                    Generate Pick Up Code
+                  </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.closeBtn} onPress={handleCloseModal}>
+                <TouchableOpacity
+                  style={styles.closeBtn}
+                  onPress={handleCloseModal}
+                >
                   <Text style={styles.closeBtnText}>Close</Text>
                 </TouchableOpacity>
               </>
@@ -157,7 +223,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: "#f0f0f0",
   },
-  modalName: { fontSize: 20, fontWeight: "bold", marginBottom: 8, color: "#222" },
+  modalName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#222",
+  },
   modalPrice: { fontSize: 18, color: "#444", marginBottom: 8 },
   modalAvailability: { fontSize: 15, fontWeight: "bold", marginBottom: 16 },
   pickupBtn: {
