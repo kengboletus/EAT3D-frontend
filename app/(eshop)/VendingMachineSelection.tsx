@@ -78,7 +78,7 @@ const VendingMachineSelectionScreen = () => {
             onPress={() =>
               router.push({
                 pathname: "../product/ProductSelection",
-                params: { machineId: item.id },
+                params: { machineId: item.id, max_products: item.max_products },
               })
             }
           />

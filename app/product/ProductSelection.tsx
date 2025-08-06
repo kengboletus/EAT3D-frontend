@@ -23,6 +23,7 @@ const ProductSelectionScreen = ({}) => {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [inventory, setInventory] = useState<UnifiedInventoryItem[]>([]);
+  const [cart, setCart] = useState<UnifiedInventoryItem[]>([]);
 
   const authFetch = useAuthFetch();
 
@@ -88,6 +89,11 @@ const ProductSelectionScreen = ({}) => {
           <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
       </View>
+      {errorMsg && (
+        <Text style={{ color: "red", textAlign: "center", marginBottom: 8 }}>
+          {errorMsg}
+        </Text>
+      )}
       <FlatList
         data={inventory}
         numColumns={3}
