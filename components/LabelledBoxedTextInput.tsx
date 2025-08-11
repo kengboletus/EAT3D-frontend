@@ -34,7 +34,7 @@ const LabelledBoxedTextInput: React.FC<Props> = ({
     <View className="flex-col items-start w-80 py-1">
       {/* Label */}
       {label && (
-        <Text className="text-xs text-light-200 pb-1 pl-1">{label}</Text>
+        <Text className="text-xs text-dark-100 pb-1 pl-1">{label}</Text>
       )}
 
       {/* Input + Optional Icon */}

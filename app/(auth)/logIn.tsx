@@ -8,10 +8,11 @@ import {
   Image,
   Keyboard,
   KeyboardAvoidingView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
+  View
 } from "react-native";
 import * as Yup from "yup";
 
@@ -89,11 +90,14 @@ export default function LogIn() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
         behavior="padding"
-        className="flex-1 justify-center items-center bg-primary"
+        className="flex-1 justify-center items-center bg-white"
       >
         {/* Logo */}
-        <Image />
-        <Text className="text-3xl text-light-100 mb-2 font-bold">Welcome!</Text>
+        <Image 
+        source={ require("../../assets/images/Eat3DBigLogo.png")} 
+        style={styles.logo}
+        />
+        <Text className="text-3xl text-dark-200 mb-2 font-bold">Welcome!</Text>
 
         {/* Formik-powered form */}
         <Formik
@@ -117,7 +121,7 @@ export default function LogIn() {
                 value={values.email}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
-                label="Email Address"
+                label="Email Address / Phone Number"
                 error={touched.email && errors.email}
               />
 
@@ -135,37 +139,52 @@ export default function LogIn() {
               {/* Login Button */}
               <View className="w-80 self-center py-8">
                 <TouchableOpacity
-                  className="w-full h-12 rounded-xl border border-white items-center justify-center"
+                  style={styles.loginButton}
+                  
                   onPress={() => handleSubmit()}
                   activeOpacity={0.8}
                   disabled={isSubmitting}
                 >
-                  <Text className="text-white text-2xl tracking-wider font-normal">
+                  <Text style={styles.loginButtonText} >
                     {isSubmitting ? "Logging in..." : "Log in"}
                   </Text>
                 </TouchableOpacity>
               </View>
 
+            
+
+
               {/* Social logins (optional placeholders) */}
-              <View className="flex-row justify-between gap-4 w-80 h-12">
-                <TouchableOpacity className="flex-1 bg-white rounded-xl justify-center items-center shadow">
-                  <Image className="w-8 h-8" />
+            <View style={styles.socialLoginContainer}>
+              <Text style={styles.socialLoginText}>Other Login Options:</Text>
+              <View style={styles.socialIcons}>
+              {/* WeChat Button */}
+                <TouchableOpacity>
+                  <Image
+                    source={ require("../../assets/images/WechatLogo.png")} 
+                    style={styles.socialIcon}
+                  />
                 </TouchableOpacity>
-                <TouchableOpacity className="flex-1 bg-white rounded-xl justify-center items-center shadow">
-                  <Image className="w-8 h-8" />
+
+              {/* Google Button */}
+                <TouchableOpacity>
+                  <Image
+                    source={ require("../../assets/images/GoogleLogo.png")} 
+                    style={styles.socialIcon}
+                  />
                 </TouchableOpacity>
-                <TouchableOpacity className="flex-1 bg-white rounded-xl justify-center items-center shadow">
-                  <Image className="w-8 h-8" />
-                </TouchableOpacity>
+
+                </View>
               </View>
 
               {/* Sign-up link */}
               <View className="absolute bottom-20 flex-row">
-                <Text className="text-light-100 pr-1">Not a member?</Text>
-                <Link href="/onboarding" className="text-light-200">
+                <Text className="text-dark-100 pr-1">Not a member?</Text>
+                <Link href="/onboarding" style={styles.signUpText}>
                   Sign up
                 </Link>
               </View>
+              
             </>
           )}
         </Formik>
@@ -173,3 +192,58 @@ export default function LogIn() {
     </TouchableWithoutFeedback>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#888",
+    marginBottom: 30,
+  },
+  loginButton: {
+    width: "100%",
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: "#888",
+    borderRadius: 20,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  loginButtonText: {
+    fontSize: 16,
+    color: "#444",
+  },
+  signUpText: {
+    fontSize: 14,
+    color: "#888",
+    marginBottom: 40,
+  },
+  socialLoginContainer: {
+    alignItems: "center",
+  },
+  socialLoginText: {
+    fontSize: 14,
+    color: "#888",
+    marginBottom: 10,
+  },
+  socialIcons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: 100,
+  },
+  socialIcon: {
+    width: 40,
+    height: 40,
+  },
+});
