@@ -1,4 +1,3 @@
-import { dummyMachines } from "@/assets/dummies/vendingmachine";
 import SplashScreenLoading from "@/components/SplashScreenLoading";
 import VMCard from "@/components/VMCard";
 import { router } from "expo-router";
@@ -69,8 +68,8 @@ const VendingMachineSelectionScreen = () => {
       )}
       <FlatList
         // Change to machines when backend is ready
-        //data = {machines}
-        data={dummyMachines}
+        data={machines}
+        // data={dummyMachines}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
         contentContainerStyle={{ paddingBottom: 20 }}

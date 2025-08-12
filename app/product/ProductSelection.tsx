@@ -7,7 +7,7 @@
  * - Tapping the bar opens a bottom sheet with a detailed list of selected items
  * - Confirm adds all selected items into the cart context and navigates to the cart
  */
-import { vendingMachineProducts, type UnifiedInventoryItem } from "@/assets/dummies/product";
+import { type UnifiedInventoryItem } from "@/assets/dummies/product";
 import SplashScreenLoading from "@/components/SplashScreenLoading";
 import VMProducts from "@/components/VMProducts";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -24,7 +24,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -58,31 +58,35 @@ const ProductSelectionScreen = ({}) => {
         const response = await authFetch(`/api/v1/vms/${machineId}/inventory`, {
           method: "GET",
         });
+        console.log("API response:", response);
         const { message, data } = response;
         if (!data) {
           setErrorMsg(message || "VMs not found");
           setInventory([]);
+          console.log("No data returned:", message);
         } else {
           setInventory(data);
+          console.log("Inventory set:", data);
         }
       } catch (error: any) {
         setErrorMsg(
           error.message || "An unexpected error occurred. Please try again."
         );
         setInventory([]);
+        console.error("Fetch error:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchInventory();
-  }, [authFetch]); // dependency array
+  }, [authFetch, machineId]); // dependency array
 
   // Data source: using local dummy products for now; swap to inventory when backend ready
   const products = useMemo<UnifiedInventoryItem[]>(() => {
-    return vendingMachineProducts[machineId as string] || [];
-    // return inventory; // when backend is ready
-  }, [machineId]);
+    // return vendingMachineProducts[machineId as string] || [];
+    return inventory; // when backend is ready
+  }, [inventory]);
 
   const getProductKey = (p: UnifiedInventoryItem) => `${p.vmId}::${p.name}`;
 
@@ -138,7 +142,9 @@ const ProductSelectionScreen = ({}) => {
       Animated.timing(slideAnim, {
         toValue: bottomVisible ? 0 : 160,
         duration: 240,
-        easing: bottomVisible ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic),
+        easing: bottomVisible
+          ? Easing.out(Easing.cubic)
+          : Easing.in(Easing.cubic),
         useNativeDriver: true,
       }),
       Animated.timing(fadeAnim, {
@@ -213,9 +219,9 @@ const ProductSelectionScreen = ({}) => {
       <FlatList
         // Change to inventory when backend is ready
         data={products}
-        //data={inventory} 
+        //data={inventory}
         numColumns={3}
-        keyExtractor={item => item.name}
+        keyExtractor={(item) => item.name}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <VMProducts
@@ -254,10 +260,7 @@ const ProductSelectionScreen = ({}) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.floatingCTA}
-          onPress={handleAddToCart}
-        >
+        <TouchableOpacity style={styles.floatingCTA} onPress={handleAddToCart}>
           <Ionicons name="cart" size={18} color="#fff" />
           <Text style={styles.floatingCTAText}>Add to Cart</Text>
         </TouchableOpacity>
@@ -272,11 +275,17 @@ const ProductSelectionScreen = ({}) => {
       >
         <Pressable style={styles.sheetOverlay} onPress={closeSheet} />
         <Animated.View
-          style={[styles.sheetContainer, { transform: [{ translateY: sheetY }] }]}
+          style={[
+            styles.sheetContainer,
+            { transform: [{ translateY: sheetY }] },
+          ]}
         >
           <View style={styles.sheetHeader}>
             <Text style={styles.sheetTitle}>Selected Items</Text>
-            <TouchableOpacity onPress={closeSheet} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <TouchableOpacity
+              onPress={closeSheet}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
               <Ionicons name="close" size={22} color="#585858" />
             </TouchableOpacity>
           </View>
@@ -286,12 +295,17 @@ const ProductSelectionScreen = ({}) => {
             keyExtractor={(it) => getProductKey(it.item)}
             renderItem={({ item }) => (
               <View style={styles.sheetRow}>
-                <Image source={{ uri: item.item.image }} style={styles.sheetImage} />
+                <Image
+                  source={{ uri: item.item.image }}
+                  style={styles.sheetImage}
+                />
                 <View style={styles.sheetInfo}>
                   <Text style={styles.sheetName} numberOfLines={1}>
                     {item.item.name}
                   </Text>
-                  <Text style={styles.sheetPrice}>HK$ {item.item.price.toFixed(2)}</Text>
+                  <Text style={styles.sheetPrice}>
+                    HK$ {item.item.price.toFixed(2)}
+                  </Text>
                 </View>
                 <View style={styles.sheetQtyControls}>
                   <TouchableOpacity
@@ -300,7 +314,9 @@ const ProductSelectionScreen = ({}) => {
                   >
                     <Entypo name="minus" size={16} color="#fff" />
                   </TouchableOpacity>
-                  <Text style={styles.sheetQtyText}>{String(item.qty).padStart(2, "0")}</Text>
+                  <Text style={styles.sheetQtyText}>
+                    {String(item.qty).padStart(2, "0")}
+                  </Text>
                   <TouchableOpacity
                     style={styles.sheetQtyBtn}
                     onPress={() => handleIncrease(item.item)}
@@ -310,7 +326,9 @@ const ProductSelectionScreen = ({}) => {
                 </View>
               </View>
             )}
-            ListEmptyComponent={<Text style={styles.sheetEmpty}>尚未選擇商品</Text>}
+            ListEmptyComponent={
+              <Text style={styles.sheetEmpty}>尚未選擇商品</Text>
+            }
             contentContainerStyle={{ paddingBottom: 16 }}
           />
 
@@ -394,7 +412,12 @@ const styles = StyleSheet.create({
   },
   floatingLeftTouchable: { flex: 1, marginRight: 12 },
   floatingLeft: {},
-  floatingTitle: { color: "rgba(52, 51, 49, 0.79)", fontSize: 13, marginBottom: 4, fontWeight: "600" },
+  floatingTitle: {
+    color: "rgba(52, 51, 49, 0.79)",
+    fontSize: 13,
+    marginBottom: 4,
+    fontWeight: "600",
+  },
   floatingMeta: { color: "#000", fontSize: 17, fontWeight: "700" },
   floatingCTA: {
     backgroundColor: "#FE8335",
@@ -405,7 +428,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  floatingCTAText: { color: "#fff", fontWeight: "900", marginLeft: 6, fontSize: 17 },
+  floatingCTAText: {
+    color: "#fff",
+    fontWeight: "900",
+    marginLeft: 6,
+    fontSize: 17,
+  },
 
   // Sheet styles
   sheetOverlay: {
@@ -442,7 +470,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "#E5E7EB",
   },
-  sheetImage: { width: 52, height: 52, borderRadius: 8, backgroundColor: "#EEE" },
+  sheetImage: {
+    width: 52,
+    height: 52,
+    borderRadius: 8,
+    backgroundColor: "#EEE",
+  },
   sheetInfo: { flex: 1, marginLeft: 12 },
   sheetName: { fontSize: 15, fontWeight: "600", color: "#222" },
   sheetPrice: { marginTop: 4, color: "#585858", fontWeight: "600" },
@@ -453,7 +486,12 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 8,
   },
-  sheetQtyText: { width: 28, textAlign: "center", fontWeight: "800", color: "#333" },
+  sheetQtyText: {
+    width: 28,
+    textAlign: "center",
+    fontWeight: "800",
+    color: "#333",
+  },
   sheetEmpty: { textAlign: "center", color: "#9CA3AF", paddingVertical: 24 },
   sheetFooter: {
     flexDirection: "row",
