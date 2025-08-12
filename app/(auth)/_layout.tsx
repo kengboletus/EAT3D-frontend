@@ -29,7 +29,6 @@ export default function AuthLayout() {
           headerLeft: () => (
             <HeaderLeftBackChevron onPress={Router.back} text="Login" />
           ),
-
           headerShadowVisible: false,
           headerTitle: "",
         }}
