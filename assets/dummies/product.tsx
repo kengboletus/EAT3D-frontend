@@ -77,37 +77,54 @@ export type UnifiedInventoryItem = {
   originalData: any; // original inventory data from vm api.
 };
 
-export const vendingMachineProducts: { [machineId: string]: Product[] } = {
+// Now every product object follows the UnifiedInventoryItem interface.
+export const vendingMachineProducts: { [machineId: string]: UnifiedInventoryItem[] } = {
   "1": [
     {
-      id: "1",
       name: "Coke",
-      image: "https://i.postimg.cc/CLq7GtzJ/Cocacola.jpg",
-      available: true,
       price: 10,
+      image: "https://i.postimg.cc/CLq7GtzJ/Cocacola.jpg",
+      vmBrand: "BrandA",
+      vmId: "1",
+      quantity: 15,
+      numOrdered: 0,
+      description: "Classic Coca-Cola beverage.",
+      originalData: {},
     },
     {
-      id: "2",
       name: "Sprite",
-      image: "https://i.postimg.cc/gkFSTm91/Sprite.jpg",
-      available: false,
       price: 9,
+      image: "https://i.postimg.cc/gkFSTm91/Sprite.jpg",
+      vmBrand: "BrandA",
+      vmId: "1",
+      quantity: 0,
+      numOrdered: 0,
+      description: "Refreshing lemon-lime soda.",
+      originalData: {},
     },
   ],
   "2": [
     {
-      id: "3",
       name: "Water",
-      image: "https://i.postimg.cc/3x3QzSGq/machine-product-1.jpg",
-      available: true,
       price: 8,
+      image: "https://i.postimg.cc/3x3QzSGq/machine-product-1.jpg",
+      vmBrand: "BrandB",
+      vmId: "2",
+      quantity: 20,
+      numOrdered: 0,
+      description: "Still mineral water 500 ml.",
+      originalData: {},
     },
     {
-      id: "4",
       name: "Chips",
-      image: "https://i.postimg.cc/kXKZJDFn/potatochips.png",
-      available: true,
       price: 12,
+      image: "https://i.postimg.cc/kXKZJDFn/potatochips.png",
+      vmBrand: "BrandB",
+      vmId: "2",
+      quantity: 10,
+      numOrdered: 0,
+      description: "Crunchy potato chips.",
+      originalData: {},
     },
   ],
 };

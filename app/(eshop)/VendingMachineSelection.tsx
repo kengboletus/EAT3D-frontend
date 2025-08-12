@@ -1,8 +1,9 @@
+import { dummyMachines } from "@/assets/dummies/vendingmachine";
 import SplashScreenLoading from "@/components/SplashScreenLoading";
 import VMCard from "@/components/VMCard";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, SafeAreaView, StyleSheet, Text } from "react-native";
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { useAuthFetch } from "../../hooks/useAuthFetch";
 
 type VendingMachine = {
@@ -57,15 +58,19 @@ const VendingMachineSelectionScreen = () => {
   }
 
   return (
-    <SafeAreaView className="bg-white" style={styles.container}>
-      <Text style={styles.title}>Vending Machine</Text>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.header}>
+        <Text style={styles.title}>Vending Machine</Text>
+      </SafeAreaView>
       {errorMsg && (
         <Text style={{ color: "red", textAlign: "center", marginBottom: 8 }}>
           {errorMsg}
         </Text>
       )}
       <FlatList
-        data={machines}
+        // Change to machines when backend is ready
+        //data = {machines}
+        data={dummyMachines}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
         contentContainerStyle={{ paddingBottom: 20 }}
@@ -86,18 +91,32 @@ const VendingMachineSelectionScreen = () => {
         keyExtractor={(item) => item.id}
         ListEmptyComponent={<Text>No listed components</Text>}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
+  container: { flex: 1, backgroundColor: "#fff" },
+  header: {
+    height: 90,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+    position: "relative",
+    backgroundColor: "#78BE21",
+    borderRadius: 4,
+  },
   title: {
     fontSize: 24,
-    color: "#585858",
+    color: "#FFFFFF",
     fontWeight: "bold",
-    marginBottom: 20,
     textAlign: "center",
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 50,
+    bottom: 0,
+    textAlignVertical: "center",
   },
 });
 
