@@ -13,6 +13,8 @@ export default function Index() {
   return user ? (
     <Redirect href="/(eshop)/home" relativeToDirectory={true} />
   ) : (
-    <Redirect href="/(auth)/logIn" relativeToDirectory={true} />
+    //<Redirect href="/(auth)/logIn" relativeToDirectory={true} />
+    <Redirect href="/(eshop)/home" relativeToDirectory={true} />
+
   );
 }

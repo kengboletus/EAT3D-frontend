@@ -28,6 +28,7 @@ type Props = {
   onRemove: () => void;
   onDecrease: () => void;
   onIncrease: () => void;
+  disablePlus?: boolean;
 };
 
 const CartItemRow: React.FC<Props> = ({
@@ -35,6 +36,7 @@ const CartItemRow: React.FC<Props> = ({
   onRemove,
   onDecrease,
   onIncrease,
+  disablePlus,
 }) => {
   // Right action used by react-native-gesture-handler's Swipeable.
   // Translates/scales in based on drag progress and exposes a trash icon.
@@ -83,7 +85,11 @@ const CartItemRow: React.FC<Props> = ({
             {String(item.numOrdered).padStart(2, "0")}
           </Text>
 
-          <TouchableOpacity style={styles.qtyBtn} onPress={onIncrease}>
+          <TouchableOpacity
+            style={[styles.qtyBtn, disablePlus ? styles.qtyBtnDisabled : null]}
+            onPress={onIncrease}
+            disabled={!!disablePlus}
+          >
             <Entypo name="plus" size={16} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -123,6 +129,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "700",
     color: "#444",
+  },
+  qtyBtnDisabled: {
+    backgroundColor: "#9CA3AF",
   },
 
   deleteAction: {

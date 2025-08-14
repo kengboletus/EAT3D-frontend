@@ -17,15 +17,20 @@ type CartContextType = {
   addItem: (item: UnifiedInventoryItem) => void;
   removeItem: (vmId: string, name: string) => void;
   updateQty: (vmId: string, name: string, qty: number) => void;
+  setItemQty: (vmId: string, name: string, qty: number) => void;
   clear: () => void;
   totalItems: number;
   totalPrice: number;
+  // VM-level rules cached so cart logic remains valid across navigation
+  setVmLimit: (vmId: string, maxProducts: number) => void;
+  getVmLimit: (vmId: string) => number | undefined;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [vmLimits, setVmLimits] = useState<Record<string, number>>({});
 
   // Adds one unit of the item; if already present, increments quantity
   const addItem = useCallback((item: UnifiedInventoryItem) => {
@@ -54,8 +59,30 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
   }, []);
 
+  // Sets quantity exactly; if qty <= 0, removes the item
+  const setItemQty = useCallback((vmId: string, name: string, qty: number) => {
+    setCart((prev) => {
+      if (qty <= 0) {
+        return prev.filter((p) => !(p.vmId === vmId && p.name === name));
+      }
+      const idx = prev.findIndex((p) => p.vmId === vmId && p.name === name);
+      if (idx === -1) return [...prev, { ...(prev[0] as any), vmId, name, numOrdered: qty } as any];
+      const next = [...prev];
+      next[idx] = { ...next[idx], numOrdered: qty };
+      return next;
+    });
+  }, []);
+
   // Clears all items from cart
   const clear = () => setCart([]);
+
+  // Cache VM limits so the cart can enforce caps even after route params are gone
+  const setVmLimit = useCallback((vmId: string, maxProducts: number) => {
+    if (!vmId || !Number.isFinite(maxProducts)) return;
+    setVmLimits((prev) => ({ ...prev, [vmId]: maxProducts }));
+  }, []);
+
+  const getVmLimit = useCallback((vmId: string) => vmLimits[vmId], [vmLimits]);
 
   // Derived totals recomputed when cart changes
   const { totalItems, totalPrice } = useMemo(
@@ -66,7 +93,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [cart]
   );
 
-  const value = { cart, addItem, removeItem, updateQty, clear, totalItems, totalPrice };
+  const value = { cart, addItem, removeItem, updateQty, setItemQty, clear, totalItems, totalPrice, setVmLimit, getVmLimit };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

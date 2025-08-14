@@ -31,6 +31,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useCart } from "../../context/cartContext";
 import { useAuthFetch } from "../../hooks/useAuthFetch";
 
+import { vendingMachineProducts } from "@/assets/dummies/product";
+
 const ProductSelectionScreen = ({}) => {
   const router = useRouter();
   const [selection, setSelection] = useState<Record<string, number>>({});
@@ -38,10 +40,11 @@ const ProductSelectionScreen = ({}) => {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [inventory, setInventory] = useState<UnifiedInventoryItem[]>([]);
-  const { addItem } = useCart();
+  const { cart, addItem, removeItem, updateQty, setVmLimit } = useCart();
   const authFetch = useAuthFetch();
 
-  const { machineId } = useLocalSearchParams();
+  const { machineId, max_products } = useLocalSearchParams();
+
 
   useEffect(() => {
     if (!machineId) {
@@ -84,19 +87,40 @@ const ProductSelectionScreen = ({}) => {
 
   // Data source: using local dummy products for now; swap to inventory when backend ready
   const products = useMemo<UnifiedInventoryItem[]>(() => {
-    // return vendingMachineProducts[machineId as string] || [];
-    return inventory; // when backend is ready
+     return vendingMachineProducts[machineId as string] || []; //Use dummy products for the moment
+    //return inventory; // when backend is ready
   }, [inventory]);
 
   const getProductKey = (p: UnifiedInventoryItem) => `${p.vmId}::${p.name}`;
 
-  // Increase selection respecting available stock
+  
+  const maxProductsLimit = useMemo(() => {
+    const n = Number(max_products);
+    return Number.isFinite(n) && n > 0 ? n : Infinity;
+  }, [max_products]);
+
+  // Sync selection from cart whenever entering this screen with the same VM
+  useEffect(() => {
+    const vm = String(machineId || "");
+    const initial: Record<string, number> = {};
+    for (const p of products) {
+      const match = cart.find((c) => c.vmId === vm && c.name === p.name);
+      if (match) {
+        initial[getProductKey(p)] = match.numOrdered;
+      }
+    }
+    setSelection(initial);
+  }, [machineId, products, cart]);
+
+  // Increase selection respecting available stock AND VM max_products
   const handleIncrease = (p: UnifiedInventoryItem) => {
     const key = getProductKey(p);
     setSelection((prev) => {
       const current = prev[key] || 0;
-      const next = Math.min(current + 1, p.quantity);
-      return { ...prev, [key]: next };
+      if (current >= p.quantity) return prev; // per-item stock
+      const totalPrev = Object.values(prev).reduce((sum, n) => sum + n, 0);
+      if (totalPrev >= maxProductsLimit) return prev; // VM max cap
+      return { ...prev, [key]: current + 1 };
     });
   };
 
@@ -180,19 +204,35 @@ const ProductSelectionScreen = ({}) => {
     });
   };
 
-  // Commit the selection into the cart context and go to cart
+  // Commit the selection into the cart context (reconcile) and go to cart
   const handleAddToCart = () => {
-    // Add selected quantities into cart
+    const vm = String(machineId || "");
     for (const p of products) {
-      const qty = selection[getProductKey(p)] || 0;
-      if (qty > 0) {
-        for (let i = 0; i < qty; i += 1) {
-          addItem(p);
-        }
+      const key = getProductKey(p);
+      const targetQty = selection[key] || 0;
+      const existing = cart.find((c) => c.vmId === vm && c.name === p.name);
+      const currentQty = existing ? existing.numOrdered : 0;
+
+      if (targetQty === currentQty) continue;
+      if (targetQty === 0 && currentQty > 0) {
+        removeItem(p.vmId, p.name);
+        continue;
+      }
+      if (targetQty > currentQty) {
+        const diff = targetQty - currentQty;
+        for (let i = 0; i < diff; i += 1) addItem(p);
+        continue;
+      }
+      if (targetQty < currentQty) {
+        updateQty(p.vmId, p.name, targetQty);
       }
     }
-    setSelection({});
-    router.push("/(eshop)/cart");
+    // persist VM limit for this machine so cart can enforce later
+    if (machineId && Number(max_products)) {
+      setVmLimit(String(machineId), Number(max_products));
+    }
+    // keep selection; navigating back will resync again
+    router.push({ pathname: "/(eshop)/cart", params: { vmId: machineId as string } });
   };
 
   if (loading) {
@@ -230,6 +270,8 @@ const ProductSelectionScreen = ({}) => {
             available={item.quantity > 0}
             price={item.price}
             quantity={selection[getProductKey(item)] || 0}
+            maxQuantity={item.quantity}
+            disableAllIncrease={selectedCount >= maxProductsLimit}
             onIncrease={() => handleIncrease(item)}
             onDecrease={() => handleDecrease(item)}
           />
@@ -317,12 +359,24 @@ const ProductSelectionScreen = ({}) => {
                   <Text style={styles.sheetQtyText}>
                     {String(item.qty).padStart(2, "0")}
                   </Text>
-                  <TouchableOpacity
-                    style={styles.sheetQtyBtn}
-                    onPress={() => handleIncrease(item.item)}
-                  >
-                    <Entypo name="plus" size={16} color="#fff" />
-                  </TouchableOpacity>
+                  {(() => {
+                    const disablePlus = (item.qty >= item.item.quantity) || (selectedCount >= maxProductsLimit);
+                    return (
+                      <TouchableOpacity
+                        style={[
+                          styles.sheetQtyBtn,
+                          disablePlus ? { backgroundColor: "#9CA3AF" } : null,
+                        ]}
+                        onPress={() => {
+                          if (disablePlus) return;
+                          handleIncrease(item.item);
+                        }}
+                        disabled={disablePlus}
+                      >
+                        <Entypo name="plus" size={16} color="#fff" />
+                      </TouchableOpacity>
+                    );
+                  })()}
                 </View>
               </View>
             )}

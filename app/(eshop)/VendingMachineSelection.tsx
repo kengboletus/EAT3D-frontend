@@ -3,7 +3,11 @@ import VMCard from "@/components/VMCard";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { useCart } from "../../context/cartContext";
 import { useAuthFetch } from "../../hooks/useAuthFetch";
+
+import { dummyMachines } from "@/assets/dummies/vendingmachine";
+import { ensureSingleVmSelection } from "@/utils/vmSelectionGuard";
 
 type VendingMachine = {
   id: string;
@@ -22,6 +26,8 @@ const VendingMachineSelectionScreen = () => {
 
   // Memoized authFetch instance, uses current auth state & methods
   const authFetch = useAuthFetch();
+  
+  const { cart, clear, setVmLimit } = useCart();
 
   useEffect(() => {
     // define a fetch function because effect functions can't be async
@@ -68,8 +74,8 @@ const VendingMachineSelectionScreen = () => {
       )}
       <FlatList
         // Change to machines when backend is ready
-        data={machines}
-        // data={dummyMachines}
+        //data={machines}
+         data={dummyMachines}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
         contentContainerStyle={{ paddingBottom: 20 }}
@@ -80,9 +86,17 @@ const VendingMachineSelectionScreen = () => {
             location={item.vm_location}
             image={item.img}
             onPress={() =>
-              router.push({
-                pathname: "../product/ProductSelection",
-                params: { machineId: item.id, max_products: item.max_products },
+              ensureSingleVmSelection({
+                cart,
+                vmId: item.id,
+                vmMaxProducts: item.max_products,
+                setVmLimit,
+                clear,
+                navigateToProductSelection: () =>
+                  router.push({
+                    pathname: "../product/ProductSelection",
+                    params: { machineId: item.id, max_products: item.max_products },
+                  }),
               })
             }
           />

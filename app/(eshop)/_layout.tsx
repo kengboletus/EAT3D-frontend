@@ -18,7 +18,7 @@ const TabsLayout = () => {
   if (isLoading) return <SplashScreen />;
 
   // If user is NOT authenticated, redirect to login
-  if (!user)
+  if (user)
     return <Redirect href="../../(auth)/logIn" relativeToDirectory={true} />;
 
   return (

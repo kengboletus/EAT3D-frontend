@@ -6,7 +6,7 @@
  * - list of cart items (each row supports swipe delete and qty controls)
  * - sticky footer with totals and a Checkout CTA
  */
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import {
   Alert,
@@ -23,22 +23,43 @@ import DoubleArcHeader from "../../components/Cart/DoubleArcHeader";
 import { useCart } from "../../context/cartContext";
 
 const Cart = () => {
-  const { cart, removeItem, updateQty, totalItems, totalPrice, clear } = useCart();
+  const { cart, removeItem, updateQty, totalItems, totalPrice, clear, getVmLimit } = useCart();
+  const { vmId } = useLocalSearchParams();
   const router = useRouter();
 
   // Render each cart item row and connect to context actions
-  const renderItem = ({ item }: any) => (
+   // Render each cart item row and connect to context actions
+   const renderItem = ({ item }: any) => (
     <CartItemRow
       item={item}
       onRemove={() => removeItem(item.vmId, item.name)}
-      onDecrease={() =>
-        updateQty(item.vmId, item.name, item.numOrdered - 1)
-      }
-      onIncrease={() =>
-        updateQty(item.vmId, item.name, item.numOrdered + 1)
-      }
+      onDecrease={() => updateQty(item.vmId, item.name, item.numOrdered - 1)}
+      onIncrease={() => {
+        const vmTotal = cart
+          .filter((p) => p.vmId === item.vmId)
+          .reduce((sum, p) => sum + p.numOrdered, 0);
+        const limit = getVmLimit(item.vmId) ?? Infinity;
+        const canIncreaseGlobal = vmTotal < limit;
+        const canIncreaseStock = item.numOrdered < item.quantity;
+        if (canIncreaseGlobal && canIncreaseStock) {
+          updateQty(item.vmId, item.name, item.numOrdered + 1);
+        }
+      }}
+      disablePlus={(() => {
+        const vmTotal = cart
+          .filter((p) => p.vmId === item.vmId)
+          .reduce((sum, p) => sum + p.numOrdered, 0);
+        const limit = getVmLimit(item.vmId) ?? Infinity;
+        return vmTotal >= limit || item.numOrdered >= item.quantity;
+      })()}
     />
   );
+
+
+
+
+
+
 
   // Empty state when cart has no items
   if (cart.length === 0)

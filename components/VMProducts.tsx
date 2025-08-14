@@ -11,6 +11,8 @@ interface VMProductProps {
   onIncrease: () => void;
   onDecrease: () => void;
   onPress?: () => void; // optional: tap card action
+  maxQuantity?: number; // available stock
+  disableAllIncrease?: boolean; // disable + due to VM max limit
 }
 
 const VMProducts: React.FC<VMProductProps> = ({
@@ -22,6 +24,8 @@ const VMProducts: React.FC<VMProductProps> = ({
   onIncrease,
   onDecrease,
   onPress,
+  maxQuantity,
+  disableAllIncrease,
 }) => (
   <TouchableOpacity
     style={styles.card}
@@ -44,9 +48,14 @@ const VMProducts: React.FC<VMProductProps> = ({
       </TouchableOpacity>
       <Text style={styles.qtyText}>{String(quantity).padStart(2, "0")}</Text>
       <TouchableOpacity
-        style={[styles.qtyBtn, styles.qtyBtnPlus, !available ? styles.qtyBtnDisabled : null]}
+        style={[
+          styles.qtyBtn, 
+          styles.qtyBtnPlus, 
+          !available || disableAllIncrease || (typeof maxQuantity === "number" && quantity >= maxQuantity)
+           ? styles.qtyBtnDisabled : null
+        ]}
         onPress={onIncrease}
-        disabled={!available}
+        disabled={!available || disableAllIncrease || (typeof maxQuantity === "number" && quantity >= maxQuantity)}
       >
         <Entypo name="plus" size={16} color="#fff" />
       </TouchableOpacity>

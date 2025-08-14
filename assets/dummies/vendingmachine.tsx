@@ -14,14 +14,14 @@ export const dummyMachines: VendingMachine[] = [
     brand: "Eat3D",
     vm_location: "尖沙咀柯士甸道西3號香港西九龍站售票大堂B1樓WEK VEM 4號舖",
     img: "https://i.postimg.cc/bJvScbRC/Vending-Machine.jpg",
-    max_products: 30,
+    max_products: 5,
   },
   {
     id: "2",
     brand: "文物舘",
     vm_location: "沙田香港中文大學文物館羅桂祥閣",
     img: "https://i.postimg.cc/bJvScbRC/Vending-Machine.jpg",
-    max_products: 25,
+    max_products: 5,
   },
   {
     id: "3",
