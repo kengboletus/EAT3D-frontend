@@ -1,3 +1,7 @@
+// SplashScreenLoggedin
+//
+// Displays logo and a large circular button on the bottom area when the user
+// is logged in (visual cue only; wire up navigation if needed).
 import { Image, TouchableOpacity, View } from "react-native";
 
 export default function SplashScreen() {

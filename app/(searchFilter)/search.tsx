@@ -16,7 +16,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-virtualized-view";
 
 /**
- * Search functionality still needs to be implemented.
+ * Search Screen
+ *
+ * Renders a search input with back navigation, a grid of product results
+ * (currently dummy data), and two sections: Recent Searches (editable list)
+ * and Popular Searches (quick chips). Hooks are stubbed for future integration
+ * with an API and persistence for recents.
  */
 
 // Data needed

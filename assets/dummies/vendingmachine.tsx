@@ -1,3 +1,10 @@
+/**
+ * Dummy Vending Machine Data
+ *
+ * Exposes a `VendingMachine` type and `dummyMachines` list used for local
+ * development and UI mocks. Machines contain a max_products constraint which
+ * can be used by the cart/selection flows to enforce basket limits.
+ */
 export type VendingMachine = {
   id: string;
   // name: string;
@@ -14,7 +21,7 @@ export const dummyMachines: VendingMachine[] = [
     brand: "Eat3D",
     vm_location: "尖沙咀柯士甸道西3號香港西九龍站售票大堂B1樓WEK VEM 4號舖",
     img: "https://i.postimg.cc/bJvScbRC/Vending-Machine.jpg",
-    max_products: 30,
+    max_products: 30, // maximum items allowed in selection/cart for this VM
   },
   {
     id: "2",

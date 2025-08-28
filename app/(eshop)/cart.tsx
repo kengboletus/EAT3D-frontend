@@ -5,17 +5,20 @@
  * - header with dual arcs and a trash button to clear all (with confirmation)
  * - list of cart items (each row supports swipe delete and qty controls)
  * - sticky footer with totals and a Checkout CTA
+ *
+ * Uses `useCart` for state and updates. The Checkout button currently routes
+ * to a placeholder order screen.
  */
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-  Alert,
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    FlatList,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import CartItemRow from "../../components/Cart/CartItemRow";

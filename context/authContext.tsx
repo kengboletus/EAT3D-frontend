@@ -1,3 +1,12 @@
+// Auth Context
+//
+// Centralized authentication state and helpers:
+// - Loads persisted access/refresh tokens on startup
+// - login: saves tokens and sets in-memory user
+// - logout: revokes refresh token (best effort), clears storage, resets user
+// - refresh: exchanges refresh token for new access token; logs out on failure
+//
+// Exposes `useAuth()` to access { user, isLoading, login, logout, refresh }.
 import React, {
   ReactNode,
   createContext,

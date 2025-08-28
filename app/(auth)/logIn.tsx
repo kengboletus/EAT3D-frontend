@@ -1,18 +1,23 @@
-// app/(auth)/login.tsx
+// Login Screen
+//
+// Presents a login form with email and password using Formik + Yup. Submits to
+// `/api/v1/tokens/` and, on success, stores tokens via `useAuth().login()`.
+// Redirects are handled by (auth)/_layout after auth updates. Includes
+// optional social login placeholders and a link to onboarding (sign up).
 import LabelledBoxedTextInput from "@/components/LabelledBoxedTextInput";
 import { useAuth } from "@/context/authContext";
 import { api } from "@/utils/api";
 import { Link } from "expo-router";
 import { Formik, FormikHelpers } from "formik";
 import {
-  Image,
-  Keyboard,
-  KeyboardAvoidingView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View
+    Image,
+    Keyboard,
+    KeyboardAvoidingView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
 } from "react-native";
 import * as Yup from "yup";
 

@@ -1,12 +1,14 @@
-// LabelledBoxedTextInput.tsx
+// LabelledBoxedTextInput
+//
+// Reusable text input with optional label, left icon, and error message.
 import React from "react";
 import {
-  Image,
-  ImageSourcePropType,
-  Text,
-  TextInput,
-  TextInputProps,
-  View,
+    Image,
+    ImageSourcePropType,
+    Text,
+    TextInput,
+    TextInputProps,
+    View,
 } from "react-native";
 
 interface Props extends TextInputProps {

@@ -1,11 +1,16 @@
+// ProductCard
+//
+// Renders a product tile used in grids. Navigates to product detail via
+// expo-router `Link` using `productID`. Currently shows placeholder image,
+// discount pill, price, and action icons (cart/favorite placeholders).
 import { Link } from "expo-router";
 import React from "react";
 import {
-  Image,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
+    Image,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 

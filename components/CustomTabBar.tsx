@@ -1,3 +1,8 @@
+// CustomTabBar
+//
+// Replaces the default bottom tab bar with a custom layout that features a
+// prominent circular middle button (index === 2) for the home route, and
+// standard icons/text for other routes. Uses className-based styling.
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -79,13 +84,11 @@ export default function CustomTabBar({
 }
 
 const styles = StyleSheet.create({
- 
   homeButton: {
     width: 90,
-    height:90,
-  }
-}
-)
+    height: 90,
+  },
+});
 
 
 

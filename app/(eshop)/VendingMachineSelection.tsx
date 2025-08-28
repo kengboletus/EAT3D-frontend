@@ -1,3 +1,9 @@
+// VendingMachineSelection Screen
+//
+// Fetches available vending machines via `useAuthFetch` and lists them as
+// `VMCard`s. On tap, navigates to product selection passing `machineId` and
+// `max_products` as route params. Shows a branded loading splash and error
+// message if the request fails.
 import SplashScreenLoading from "@/components/SplashScreenLoading";
 import VMCard from "@/components/VMCard";
 import { router } from "expo-router";

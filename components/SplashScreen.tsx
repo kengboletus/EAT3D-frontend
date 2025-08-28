@@ -1,3 +1,6 @@
+// SplashScreen (static)
+//
+// Minimal splash with centered brand logo.
 import { Image, View } from "react-native";
 
 export default function SplashScreen() {

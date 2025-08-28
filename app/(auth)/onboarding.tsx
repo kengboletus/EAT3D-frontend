@@ -1,4 +1,8 @@
-// Onboarding.tsx
+// Onboarding Screen
+//
+// Registration form powered by Formik + Yup. Posts to `/api/v1/users/` and on
+// success stores tokens via `useAuth().login()`. After auth update, the
+// (auth)/_layout handles redirect to e-shop home.
 import { Formik, FormikHelpers } from "formik";
 import React from "react";
 import {

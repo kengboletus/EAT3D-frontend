@@ -1,3 +1,8 @@
+// (auth)/_layout
+//
+// Defines the authentication stack (login + onboarding). While auth state
+// is loading, we show the splash. If a user is already authenticated, we
+// redirect them to the e-shop home. Otherwise, render the auth screens.
 import HeaderLeftBackChevron from "@/components/HeaderLeftBackChevron";
 import { Redirect, Stack, router } from "expo-router";
 import SplashScreen from "../../components/SplashScreen";

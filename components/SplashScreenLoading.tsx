@@ -1,3 +1,7 @@
+// SplashScreenLoading
+//
+// Shows the brand logo with a centered loading spinner while app is fetching
+// or performing startup tasks.
 import { ActivityIndicator, Image, View } from "react-native";
 
 export default function SplashScreen() {

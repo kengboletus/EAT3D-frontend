@@ -1,4 +1,4 @@
-// components/DoubleArcHeader.tsx
+// components/Cart/DoubleArcHeader
 /**
  * DoubleArcHeader
  *
