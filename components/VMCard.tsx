@@ -1,7 +1,13 @@
+// VMCard
+//
+// Small card used to represent a vending machine in a grid. Shows an image
+// and location text, and invokes `onPress` when tapped. Status display is
+// kept for future use but commented out.
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 // import images from "@/assets/images"; // Adjust the import path as necessary
 
+// Minimal data needed to render a VM entry
 export interface VMCardProps {
   location: string;
   // status: "online" | "offline";

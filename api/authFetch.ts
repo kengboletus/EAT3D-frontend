@@ -1,4 +1,11 @@
 // src/api/authFetch.ts
+//
+// Factory that returns a token-aware fetch wrapper built on top of `apiClient`.
+// It transparently ensures an up-to-date access token:
+// - Reads token from the current user or SecureStore
+// - Decodes and checks expiry with `decodeJwt`
+// - Triggers a refresh (debounced to a single concurrent call) when expired
+// - Logs out and errors if refresh fails or token is missing
 
 import { getSecureItem } from "../utils/secureStore";
 import { decodeJwt } from "../utils/tokenUtils"; // your JWT decode + expiry helpers

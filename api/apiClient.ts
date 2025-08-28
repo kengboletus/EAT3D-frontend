@@ -1,3 +1,8 @@
+// apiClient
+//
+// Thin wrapper around fetch that builds a full URL from a base `api`,
+// attaches JSON headers, and optionally sets a Bearer token. Returns the
+// parsed JSON body or throws with a meaningful message on non-2xx.
 import { api } from "../utils/api";
 
 /**

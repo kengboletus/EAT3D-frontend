@@ -1,3 +1,8 @@
+// useAuthFetch
+//
+// Hook that returns a memoized `authFetch` bound to the current AuthContext
+// state. All calls share a common refresh lock (inside createAuthFetch), so
+// concurrent requests during expiry trigger only one refresh.
 import { useMemo } from "react";
 import { createAuthFetch } from "../api/authFetch";
 import { useAuth } from "../context/authContext";

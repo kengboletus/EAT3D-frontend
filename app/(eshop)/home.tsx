@@ -1,18 +1,23 @@
+// Home Screen
+//
+// Shows a top greeting/controls bar, a promotions carousel, and two product
+// grids (Recommended, Latest) using dummy data. Navigation shortcuts are
+// wired for Search and placeholders for Notifications/QR/Favorites.
 import { dummyProducts } from "@/assets/dummies/product";
 import ProductCard from "@/components/ProductCard";
 import { useRouter } from "expo-router";
 import * as React from "react";
 import {
-  Dimensions,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View,
+    Dimensions,
+    FlatList,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, {
-  ICarouselInstance,
-  Pagination,
+    ICarouselInstance,
+    Pagination,
 } from "react-native-reanimated-carousel";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Entypo from "react-native-vector-icons/Entypo";

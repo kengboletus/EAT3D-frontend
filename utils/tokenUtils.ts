@@ -1,3 +1,10 @@
+// tokenUtils
+//
+// Helpers for working with JWTs on the client:
+// - decodeJwt: safely decodes a JWT and returns its payload
+// - isTokenExpired: checks expiration against current time
+// - getTokenRemainingTime: seconds until expiration (0 if expired/invalid)
+// - getClaimFromToken: utility to read a specific claim by key
 import { jwtDecode } from "jwt-decode";
 
 export interface JwtPayload {

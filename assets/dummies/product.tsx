@@ -1,3 +1,13 @@
+/**
+ * Dummy Product Data + Shared Types
+ *
+ * This module provides:
+ * - dummyProducts: simple product list used in early mocks
+ * - dummySearches: example recent searches
+ * - Product: minimal product type used by some UI
+ * - UnifiedInventoryItem: normalized inventory item used across VM flows
+ * - vendingMachineProducts: per-VM sample inventory using UnifiedInventoryItem
+ */
 export const dummyProducts = [
   {
     productID: 11111111,
@@ -86,7 +96,7 @@ export const vendingMachineProducts: { [machineId: string]: UnifiedInventoryItem
       image: "https://i.postimg.cc/CLq7GtzJ/Cocacola.jpg",
       vmBrand: "BrandA",
       vmId: "1",
-      quantity: 15,
+      quantity: 15, // available stock
       numOrdered: 0,
       description: "Classic Coca-Cola beverage.",
       originalData: {},
@@ -97,7 +107,7 @@ export const vendingMachineProducts: { [machineId: string]: UnifiedInventoryItem
       image: "https://i.postimg.cc/gkFSTm91/Sprite.jpg",
       vmBrand: "BrandA",
       vmId: "1",
-      quantity: 0,
+      quantity: 0, // out of stock; useful to test disabled UI
       numOrdered: 0,
       description: "Refreshing lemon-lime soda.",
       originalData: {},

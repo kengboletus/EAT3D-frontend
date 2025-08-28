@@ -1,3 +1,9 @@
+// (eshop)/_layout
+//
+// Defines the authenticated tab layout for the e-shop section. While auth is
+// loading, a splash is shown; unauthenticated users are redirected to login.
+// Uses a custom tab bar and sets up routes for home, order, VM selection,
+// cart, and account.
 import CustomTabBar from "@/components/CustomTabBar";
 import { Redirect, Tabs } from "expo-router";
 import React from "react";
@@ -9,7 +15,7 @@ import { useAuth } from "../../context/authContext";
 /**
  * Fade animation only applies to the screen behind the tab bar and not the
  * tab bar itself. There is no support for tab bar animation in standard
- * react native, so look for library and fix this later.
+ * React Native; consider a library if tab transitions are required.
  */
 const TabsLayout = () => {
   const { user, isLoading } = useAuth();

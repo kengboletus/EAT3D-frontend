@@ -1,3 +1,8 @@
+// api.ts
+//
+// Computes the base API URL based on environment. In dev, derives the
+// machine host from Expo's hostUri and uses a local port (HTTP). In prod,
+// falls back to a configured HTTPS endpoint.
 import Constants from "expo-constants";
 
 const getApiBaseUrl = () => {

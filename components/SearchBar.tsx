@@ -1,3 +1,7 @@
+// SearchBar
+//
+// Simple search input with a left search icon and an optional right filter
+// icon. Parent provides handlers for typing and tapping icons.
 import { TextInput, TouchableOpacity, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 

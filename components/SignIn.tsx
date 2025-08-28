@@ -1,3 +1,8 @@
+// SignIn (membership landing)
+//
+// Presents brand logo, a primary login/register CTA, an optional "skip" link,
+// and social login placeholders (WeChat, Google). Hook up callbacks/navigate
+// as desired in the parent screen.
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 

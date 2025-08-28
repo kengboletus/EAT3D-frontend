@@ -1,3 +1,9 @@
+// Root Index Route
+//
+// Acts as an auth gate and traffic director:
+// - While auth state is loading, shows the branded splash screen
+// - If authenticated, redirects to the e-shop home
+// - If not authenticated, redirects to the login screen
 import { Redirect } from "expo-router";
 import SplashScreen from "../components/SplashScreen";
 import { useAuth } from "../context/authContext";

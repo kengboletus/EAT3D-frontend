@@ -1,13 +1,18 @@
+// Account Screen
+//
+// Demonstrates a simple authenticated request using `useAuthFetch` and a
+// lookup by numeric user ID. Also provides a Sign out action that clears
+// auth and navigates to login.
 import { useRouter } from "expo-router";
 import { Formik, FormikHelpers } from "formik";
 import React, { useState } from "react";
 import {
-  Keyboard,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
+    Keyboard,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
 } from "react-native";
 import * as Yup from "yup";
 import { useAuth } from "../../context/authContext";
@@ -48,9 +53,9 @@ const Account = () => {
         method: "GET",
       });
 
-      // The authFetch delegates to apiClient which already parses JSON
-      // So response here is the parsed JSON object
-      // Assuming your API returns { message, data }
+      // The authFetch delegates to apiClient which already parses JSON.
+      // So response here is the parsed JSON object.
+      // Assuming your API returns { message, data }.
       const { message, data } = response;
 
       if (!data) {

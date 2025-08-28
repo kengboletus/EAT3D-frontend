@@ -1,3 +1,8 @@
+// secureStore
+//
+// Thin wrappers around Expo SecureStore to set, get, delete, and bulk-clear
+// secrets like tokens. Centralizes options and keeps the rest of the app
+// decoupled from the underlying storage API.
 import * as SecureStore from "expo-secure-store";
 
 /**

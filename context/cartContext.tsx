@@ -1,10 +1,16 @@
 /**
  * Cart Context
  *
- * Centralized state for the shopping cart. Exposes imperative helpers
- * to add, remove, update quantities, and clear the cart, plus derived
- * totals for item count and price. Components call these methods; the
- * provider keeps state and recomputes totals efficiently.
+ * Centralized state for the shopping cart. Exposes imperative helpers to:
+ * - add items (or increment if already present)
+ * - remove items entirely
+ * - update existing quantities (clamped to a minimum of 1)
+ * - clear the cart
+ * And provides derived totals (count and price) recomputed whenever the cart changes.
+ *
+ * Usage:
+ * - Wrap app with <CartProvider> at a suitable root level
+ * - Access with const { cart, addItem, ... } = useCart()
  */
 import type { UnifiedInventoryItem } from "@/assets/dummies/product";
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
@@ -27,7 +33,8 @@ const CartContext = createContext<CartContextType | null>(null);
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // Adds one unit of the item; if already present, increments quantity
+  // Adds one unit of the item; if already present, increments quantity.
+  // Keying uses (vmId, name) to uniquely identify a product in a specific VM.
   const addItem = useCallback((item: UnifiedInventoryItem) => {
     setCart((prev) => {
       const idx = prev.findIndex((p) => p.vmId === item.vmId && p.name === item.name);

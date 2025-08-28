@@ -6,6 +6,12 @@
  * - Floating bottom bar appears when any quantity is selected, showing totals
  * - Tapping the bar opens a bottom sheet with a detailed list of selected items
  * - Confirm adds all selected items into the cart context and navigates to the cart
+ *
+ * Data flow:
+ * - Fetch inventory for a given `machineId` using `useAuthFetch`
+ * - Maintain local `selection` map keyed by `${vmId}::${name}` for quantities
+ * - Respect per-item stock (`quantity`) when increasing
+ * - Commit selection by calling `addItem` repeatedly for each unit, then route to cart
  */
 import { type UnifiedInventoryItem } from "@/assets/dummies/product";
 import SplashScreenLoading from "@/components/SplashScreenLoading";
@@ -13,18 +19,18 @@ import VMProducts from "@/components/VMProducts";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Animated,
-  Dimensions,
-  Easing,
-  FlatList,
-  Image,
-  Modal,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Animated,
+    Dimensions,
+    Easing,
+    FlatList,
+    Image,
+    Modal,
+    Pressable,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
